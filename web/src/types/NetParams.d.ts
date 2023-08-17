@@ -63,6 +63,14 @@ declare module NetParams {
     status: number;
   }
 
+  interface FollowUserReq {
+    user_id: number;
+  }
+
+  interface UnfollowUserReq {
+    user_id: number;
+  }
+
   interface UserReqRecharge {
     amount: number;
   }
@@ -111,6 +119,18 @@ declare module NetParams {
     page_size: number;
   }
 
+  interface GetUserFollows {
+    username: string;
+    page: number;
+    page_size: number;
+  }
+
+  interface GetUserFollowings {
+    username: string;
+    page: number;
+    page_size: number;
+  }
+
   interface UserChangePassword {
     /** 新密码 */
     password: string;
@@ -139,6 +159,10 @@ declare module NetParams {
   }
 
   interface PostStickPost {
+    id: number;
+  }
+
+  interface PostHighlightPost {
     id: number;
   }
 

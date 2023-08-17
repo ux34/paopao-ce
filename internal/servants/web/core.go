@@ -14,6 +14,7 @@ import (
 	"github.com/gin-gonic/gin"
 	api "github.com/rocboss/paopao-ce/auto/api/v1"
 	"github.com/rocboss/paopao-ce/internal/core"
+	"github.com/rocboss/paopao-ce/internal/core/ms"
 	"github.com/rocboss/paopao-ce/internal/model/web"
 	"github.com/rocboss/paopao-ce/internal/servants/base"
 	"github.com/rocboss/paopao-ce/internal/servants/chain"
@@ -59,14 +60,21 @@ func (s *coreSrv) GetUserInfo(req *web.UserInfoReq) (*web.UserInfoResp, mir.Erro
 	if user.Model == nil || user.ID < 0 {
 		return nil, xerror.UnauthorizedAuthNotExist
 	}
+	follows, followings, err := s.Ds.GetFollowCount(user.ID)
+	if err != nil {
+		return nil, web.ErrGetFollowCountFailed
+	}
 	resp := &web.UserInfoResp{
-		Id:       user.ID,
-		Nickname: user.Nickname,
-		Username: user.Username,
-		Status:   user.Status,
-		Avatar:   user.Avatar,
-		Balance:  user.Balance,
-		IsAdmin:  user.IsAdmin,
+		Id:         user.ID,
+		Nickname:   user.Nickname,
+		Username:   user.Username,
+		Status:     user.Status,
+		Avatar:     user.Avatar,
+		Balance:    user.Balance,
+		IsAdmin:    user.IsAdmin,
+		CreatedOn:  user.CreatedOn,
+		Follows:    follows,
+		Followings: followings,
 	}
 	if user.Phone != "" && len(user.Phone) == 11 {
 		resp.Phone = user.Phone[0:3] + "****" + user.Phone[7:]
@@ -85,7 +93,7 @@ func (s *coreSrv) GetUnreadMsgCount(req *web.GetUnreadMsgCountReq) (*web.GetUnre
 }
 
 func (s *coreSrv) GetMessages(req *web.GetMessagesReq) (*web.GetMessagesResp, mir.Error) {
-	conditions := &core.ConditionsT{
+	conditions := &ms.ConditionsT{
 		"receiver_user_id": req.UserId,
 		"ORDER":            "id DESC",
 	}
@@ -98,7 +106,7 @@ func (s *coreSrv) GetMessages(req *web.GetMessagesReq) (*web.GetMessagesResp, mi
 			}
 		}
 		// 好友申请消息不需要获取其他信息
-		if mf.Type == core.MsgTypeRequestingFriend {
+		if mf.Type == ms.MsgTypeRequestingFriend {
 			continue
 		}
 		if mf.PostID > 0 {
@@ -157,10 +165,10 @@ func (s *coreSrv) SendUserWhisper(req *web.SendWhisperReq) mir.Error {
 	}
 
 	// 创建私信
-	_, err := s.Ds.CreateMessage(&core.Message{
+	_, err := s.Ds.CreateMessage(&ms.Message{
 		SenderUserID:   req.Uid,
 		ReceiverUserID: req.UserID,
-		Type:           core.MsgTypeWhisper,
+		Type:           ms.MsgTypeWhisper,
 		Brief:          "给你发送新私信了",
 		Content:        req.Content,
 	})
@@ -187,7 +195,7 @@ func (s *coreSrv) GetCollections(req *web.GetCollectionsReq) (*web.GetCollection
 		return nil, web.ErrGetCollectionsFailed
 	}
 
-	var posts []*core.Post
+	var posts []*ms.Post
 	for _, collection := range collections {
 		posts = append(posts, collection.Post)
 	}
@@ -239,7 +247,7 @@ func (s *coreSrv) UserPhoneBind(req *web.UserPhoneBindReq) mir.Error {
 }
 
 func (s *coreSrv) GetStars(req *web.GetStarsReq) (*web.GetStarsResp, mir.Error) {
-	stars, err := s.Ds.GetUserPostStars(req.UserId, (req.Page-1)*req.PageSize, req.PageSize)
+	stars, err := s.Ds.GetUserPostStars(req.UserId, req.PageSize, (req.Page-1)*req.PageSize)
 	if err != nil {
 		logrus.Errorf("Ds.GetUserPostStars err: %s", err)
 		return nil, web.ErrGetStarsFailed
@@ -249,8 +257,7 @@ func (s *coreSrv) GetStars(req *web.GetStarsReq) (*web.GetStarsResp, mir.Error) 
 		logrus.Errorf("Ds.GetUserPostStars err: %s", err)
 		return nil, web.ErrGetStarsFailed
 	}
-
-	var posts []*core.Post
+	var posts []*ms.Post
 	for _, star := range stars {
 		posts = append(posts, star.Post)
 	}
@@ -260,7 +267,6 @@ func (s *coreSrv) GetStars(req *web.GetStarsReq) (*web.GetStarsResp, mir.Error) 
 		return nil, web.ErrGetStarsFailed
 	}
 	resp := base.PageRespFrom(postsFormated, req.Page, req.PageSize, totalRows)
-
 	return (*web.GetStarsResp)(resp), nil
 }
 
@@ -284,7 +290,7 @@ func (s *coreSrv) ChangePassword(req *web.ChangePasswordReq) mir.Error {
 }
 
 func (s *coreSrv) SuggestTags(req *web.SuggestTagsReq) (*web.SuggestTagsResp, mir.Error) {
-	tags, err := s.Ds.GetTagsByKeyword(req.Keyword)
+	tags, err := s.Ds.TagsByKeyword(req.Keyword)
 	if err != nil {
 		logrus.Errorf("Ds.GetTagsByKeyword err: %s", err)
 		return nil, xerror.ServerError

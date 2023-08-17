@@ -8,23 +8,27 @@ import (
 	"github.com/alimy/mir/v4"
 	"github.com/gin-gonic/gin"
 	"github.com/rocboss/paopao-ce/internal/core"
+	"github.com/rocboss/paopao-ce/internal/core/cs"
 	"github.com/rocboss/paopao-ce/internal/servants/base"
 	"github.com/rocboss/paopao-ce/pkg/app"
 )
 
 const (
-	TagTypeHot       TagType = "hot"
-	TagTypeNew       TagType = "new"
-	TagTypeFollow    TagType = "follow"
-	TagTypeHotExtral TagType = "hot_extral"
+	TagTypeHot       = cs.TagTypeHot
+	TagTypeNew       = cs.TagTypeNew
+	TagTypeFollow    = cs.TagTypeFollow
+	TagTypeHotExtral = cs.TagTypeHotExtral
 )
 
 const (
-	UserPostsStylePost    = "post"
-	UserPostsStyleComment = "comment"
-	UserPostsStyleMedia   = "media"
-	UserPostsStyleStar    = "star"
+	UserPostsStylePost      = "post"
+	UserPostsStyleComment   = "comment"
+	UserPostsStyleHighlight = "highlight"
+	UserPostsStyleMedia     = "media"
+	UserPostsStyleStar      = "star"
 )
+
+type TagType = cs.TagType
 
 type TweetCommentsReq struct {
 	SimpleInfo   `form:"-" binding:"-"`
@@ -35,8 +39,6 @@ type TweetCommentsReq struct {
 }
 
 type TweetCommentsResp base.PageResp
-
-type TagType string
 
 type TimelineReq struct {
 	BaseInfo   `form:"-"  binding:"-"`
@@ -65,13 +67,17 @@ type GetUserProfileReq struct {
 }
 
 type GetUserProfileResp struct {
-	ID       int64  `json:"id"`
-	Nickname string `json:"nickname"`
-	Username string `json:"username"`
-	Status   int    `json:"status"`
-	Avatar   string `json:"avatar"`
-	IsAdmin  bool   `json:"is_admin"`
-	IsFriend bool   `json:"is_friend"`
+	ID          int64  `json:"id"`
+	Nickname    string `json:"nickname"`
+	Username    string `json:"username"`
+	Status      int    `json:"status"`
+	Avatar      string `json:"avatar"`
+	IsAdmin     bool   `json:"is_admin"`
+	IsFriend    bool   `json:"is_friend"`
+	IsFollowing bool   `json:"is_following"`
+	CreatedOn   int64  `json:"created_on"`
+	Follows     int64  `json:"follows"`
+	Followings  int64  `json:"followings"`
 }
 
 type TopicListReq struct {
@@ -84,8 +90,8 @@ type TopicListReq struct {
 // TopicListResp 主题返回值
 // TODO: 优化内容定义
 type TopicListResp struct {
-	Topics       []*core.TagFormated `json:"topics"`
-	ExtralTopics []*core.TagFormated `json:"extral_topics,omitempty"`
+	Topics       cs.TagList `json:"topics"`
+	ExtralTopics cs.TagList `json:"extral_topics,omitempty"`
 }
 
 func (r *GetUserTweetsReq) SetPageInfo(page int, pageSize int) {
