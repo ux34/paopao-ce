@@ -12,6 +12,19 @@
     >
         <div class="auth-wrap">
             <n-card :bordered="false">
+                <n-space justify="center"><n-h3><n-text type="success">账号登录</n-text></n-h3></n-space>
+                <n-button
+                    type="primary"
+                    block
+                    secondary
+                    strong
+                    :loading="loading"
+                    @click="handleKoobooLogin"
+                >
+                    Kooboo一键登录
+                </n-button>
+            </n-card>
+            <!-- <n-card :bordered="false">
                 <div v-if="!allowUserRegister">
                     <n-space justify="center"><n-h3><n-text type="success">账号登录</n-text></n-h3></n-space>
                     <n-form
@@ -148,7 +161,7 @@
                         </n-button>
                     </n-tab-pane>
                 </n-tabs>
-            </n-card>
+            </n-card> -->
         </div>
     </n-modal>
 </template>
@@ -279,7 +292,41 @@ const handleRegister = (e: Event) => {
     });
 };
 
+
+const getCookie = (cookieName: string) => {
+  const cookieValue = document.cookie.replace(
+    new RegExp("(?:(?:^|.*;\\s*)" + cookieName + "\\s*\\=\\s*([^;]*).*$)|^.*$"),
+    "$1"
+  );
+  return cookieValue;
+}
+
+function clearCookie(cookieName: string) {
+  document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
+
+const handleKoobooLogin = () => {
+
+    // 开发环境直接输入jwt_token用于测试
+    if (import.meta.env.MODE === 'development') {
+        const jwt_token = prompt('开发环境, 请输入jwt_token: ')
+        if (jwt_token) {
+            document.cookie = `jwt_token=${jwt_token};`
+            location.reload()
+        }
+        return
+    }
+
+    clearCookie('jwt_token')
+    // 需要是同一个站点才能拿到cookie
+    location.href = `${import.meta.env.VITE_HOST}/_Admin/login?returnurl=${location.href}`
+}
+
 onMounted(() => {
+    // 使用kooboo的jwt_token登录
+    const jwt_token = getCookie("jwt_token");
+    // console.log(jwt_token);
+    jwt_token && localStorage.setItem("PAOPAO_TOKEN", jwt_token);
     const token = localStorage.getItem('PAOPAO_TOKEN') || '';
     if (token) {
         userInfo(token)

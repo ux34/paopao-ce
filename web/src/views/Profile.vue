@@ -24,7 +24,7 @@
                         <span class="info-item">UID. {{ store.state.userInfo.id }} </span>
                         <span class="info-item">{{ formatDate(store.state.userInfo.created_on) }}&nbsp;加入</span>
                     </div>
-                    <div class="userinfo">
+                    <div v-if="false" class="userinfo">
                         <span class="info-item">
                              <router-link
                                 @click.stop

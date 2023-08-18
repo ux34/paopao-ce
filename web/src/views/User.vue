@@ -31,7 +31,7 @@
                             <span class="info-item">UID. {{ user.id }} </span>
                             <span class="info-item">{{ formatDate(user.created_on) }}&nbsp;加入</span>
                         </div>
-                        <div class="userinfo">
+                        <div v-if="false" class="userinfo">
                             <span class="info-item">
                                 <router-link
                                     @click.stop
@@ -406,7 +406,7 @@ const userOptions = computed(() => {
             });
         }
     }
-    if (user.is_following) {
+    /* if (user.is_following) {
         options.push({
             label: '取消关注',
             key: 'unfollow',
@@ -418,7 +418,7 @@ const userOptions = computed(() => {
             key: 'follow',
             icon: renderIcon(BodyOutline)
         })
-    }
+    } */
     if (user.is_friend) {
         options.push({
             label: '删除好友',

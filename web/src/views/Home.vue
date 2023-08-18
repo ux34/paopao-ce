@@ -89,6 +89,9 @@ const loadPosts = () => {
 };
 
 const onPostSuccess = (post: Item.PostProps) => {
+    // 刷新话题
+    store.commit("refreshTopicFollow")
+    
     // 如果不在第一页，需要跳转到详情页面
     if (page.value != 1) {
         router.push({

@@ -1,5 +1,8 @@
-import { stat } from "fs";
 import { createStore } from "vuex";
+
+function clearCookie(cookieName: string) {
+  document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+}
 
 export default createStore({
   state: {
@@ -54,6 +57,7 @@ export default createStore({
     },
     userLogout(state) {
       localStorage.removeItem("PAOPAO_TOKEN");
+      clearCookie('jwt_token');
       state.userInfo = {
         id: 0,
         nickname: "",

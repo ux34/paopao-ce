@@ -167,14 +167,14 @@
                         <n-divider vertical />
                         {{ post.ip_loc }}
                     </span>
-                    <span v-if="!store.state.collapsedLeft && post.created_on != post.latest_replied_on">
+                    <span v-if="!store.state.collapsedLeft && post.created_on != post.latest_replied_on &&  post.latest_replied_on">
                         <n-divider vertical /> 最后回复
                         {{ formatPrettyTime(post.latest_replied_on) }}
                     </span>
                 </div>
             </template>
             <template #action>
-                <div class="opts-wrap">
+                <div class="opts-wrap" :style="{'pointer-events': store.state.userInfo.id?'auto':'none'}">
                     <n-space justify="space-between">
                         <div
                             class="opt-item hover"
@@ -202,7 +202,7 @@
                             </n-icon>
                             {{ post.collection_count }}
                         </div>
-                        <div
+                        <!-- <div
                             class="opt-item hover"
                             @click.stop="handlePostShare"
                         >
@@ -210,7 +210,7 @@
                                 <share-social-outline />
                             </n-icon>
                             {{ post.share_count }}
-                        </div>
+                        </div> -->
                     </n-space>
                 </div>
             </template>
@@ -367,50 +367,55 @@ const adminOptions = computed(() => {
             });
         }
     }
-    if (post.value.is_essence === 0) {
-        options.push({
-            label: '设为亮点',
-            key: 'highlight',
-            icon: renderIcon(FlameOutline)
-        });
-    } else {
-        options.push({
-            label: '取消亮点',
-            key: 'unhighlight',
-            icon: renderIcon(FlameOutline)
-        });
+    if (store.state.userInfo.id === post.value.user.id) {
+        if (post.value.is_essence === 0) {
+            options.push({
+                label: '设为亮点',
+                key: 'highlight',
+                icon: renderIcon(FlameOutline)
+            });
+        } else {
+            options.push({
+                label: '取消亮点',
+                key: 'unhighlight',
+                icon: renderIcon(FlameOutline)
+            });
+        }
+        
+        if (post.value.visibility === VisibilityEnum.PUBLIC) {
+            options.push({
+                label: '公开',
+                key: 'vpublic',
+                icon: renderIcon(EyeOutline),
+                children: [
+                    { label: '私密', key: 'vprivate', icon: renderIcon(EyeOffOutline)}
+                    , { label: '好友可见', key: 'vfriend', icon: renderIcon(PersonOutline) }
+                ]
+            })
+        } else if (post.value.visibility === VisibilityEnum.PRIVATE) {
+            options.push({
+                label: '私密',
+                key: 'vprivate',
+                icon: renderIcon(EyeOffOutline),
+                children: [
+                    { label: '公开', key: 'vpublic', icon: renderIcon(EyeOutline) }
+                    , { label: '好友可见', key: 'vfriend', icon: renderIcon(PersonOutline) }
+                ]
+            })
+        } else {
+            options.push({
+                label: '好友可见',
+                key: 'vfriend',
+                icon: renderIcon(PersonOutline),
+                children: [
+                    { label: '公开', key: 'vpublic', icon: renderIcon(EyeOutline) }
+                    , { label: '私密', key: 'vprivate', icon: renderIcon(EyeOffOutline) }
+                ]
+            })
+        }
     }
-    if (post.value.visibility === VisibilityEnum.PUBLIC) {
-        options.push({
-            label: '公开',
-            key: 'vpublic',
-            icon: renderIcon(EyeOutline),
-            children: [
-                { label: '私密', key: 'vprivate', icon: renderIcon(EyeOffOutline)}
-                , { label: '好友可见', key: 'vfriend', icon: renderIcon(PersonOutline) }
-            ]
-        })
-    } else if (post.value.visibility === VisibilityEnum.PRIVATE) {
-        options.push({
-            label: '私密',
-            key: 'vprivate',
-            icon: renderIcon(EyeOffOutline),
-            children: [
-                { label: '公开', key: 'vpublic', icon: renderIcon(EyeOutline) }
-                , { label: '好友可见', key: 'vfriend', icon: renderIcon(PersonOutline) }
-            ]
-        })
-    } else {
-        options.push({
-            label: '好友可见',
-            key: 'vfriend',
-            icon: renderIcon(PersonOutline),
-            children: [
-                { label: '公开', key: 'vpublic', icon: renderIcon(EyeOutline) }
-                , { label: '私密', key: 'vprivate', icon: renderIcon(EyeOffOutline) }
-            ]
-        })
-    }
+    
+    
     return options;
 });
 

@@ -6,6 +6,7 @@
                 clearable
                 placeholder="搜一搜..."
                 v-model:value="keyword"
+                @clear="handleCancelSearch"
                 @keyup.enter.prevent="handleSearch"
             >
                 <template #prefix>
@@ -125,6 +126,11 @@ const formatQuoteNum = (num: number) => {
     }
 
     return num;
+};
+const handleCancelSearch = () => {
+    router.push({
+        name: 'home',
+    });
 };
 const handleSearch = () => {
     router.push({

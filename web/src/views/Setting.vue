@@ -267,7 +267,7 @@
             </div>
         </n-card>
 
-        <n-card title="账户安全" size="small" class="setting-card">
+        <!-- <n-card title="账户安全" size="small" class="setting-card">
             您已设置密码
             <n-button
                 quaternary
@@ -335,7 +335,7 @@
                     </n-row>
                 </n-form>
             </div>
-        </n-card>
+        </n-card> -->
     </div>
 </template>
 
@@ -708,8 +708,8 @@ onMounted(() => {
         store.commit('triggerAuth', true);
         store.commit('triggerAuthKey', 'signin');
     }
-    loadCaptcha();
-    loadCaptcha4Activate();
+    // loadCaptcha();
+    // loadCaptcha4Activate();
 });
 </script>
 

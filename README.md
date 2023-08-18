@@ -1,3 +1,42 @@
+### 二开说明
+
+> 使用Kooboo创建一个轻量的PaoPao微社区
+
+## 发布到Kooboo
+```
+npm -g kooboo_spa
+
+cd .\web\
+npm run build
+
+kooboo-spa -h {booboo Site} -u {username} -p {password}
+```
+
+<details>
+  <summary>更新日志</summary>
+  
+  ### v1.0(2023-08-18) - ux34
+  - 【新增】 二开说明
+  - 【修改】 使用Kooboo代替后端，golang部分代码仅用于参考
+  - 【修改】 移除部分功能
+    - 余额充值
+    - 付费附件
+    - 手机绑定
+    - 上传视频
+    - 管理员设为亮点
+  - 【修改】 隐藏部分功能
+    - 管理员禁言用户（后续增加）
+    - Friendship 关注|粉丝（不完善）
+    - 分享功能（不完善）
+  - 【修复】 未登录可以点赞收藏
+  - 【修复】 post.id = 1 时不显示，(post.id > 1 应该是条件写错了)
+  - 【优化】 发布动态刷新话题
+  - 【优化】 清空搜索后重新加载列表
+  - 【优化】 最后回复时间为空时显示错误时间
+
+  
+</details>
+
 <div id="top"></div>
 
 <!-- PROJECT SHIELDS -->

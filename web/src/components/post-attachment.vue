@@ -6,7 +6,7 @@
             :key="attachment.id"
         >
             <n-button
-                @click.stop="download(attachment)"
+                @click.stop="openDownload(attachment)"
                 type="primary"
                 size="tiny"
                 dashed
@@ -16,7 +16,7 @@
                         <cloud-download-outline />
                     </n-icon>
                 </template>
-                {{ attachment.type === 8 ? '收费' : '免费' }}附件
+                附件
             </n-button>
         </div>
 
@@ -102,6 +102,14 @@ const execDownloadAction = () => {
             console.log(err);
         });
 };
+
+
+// 直接下载，不搞收费
+const openDownload = (attachment: Item.PostItemProps) => {
+
+    window.open(attachment.content.replace('http://', 'https://'), '_blank');
+
+}
 </script>
 
 <style lang="less" scoped>
