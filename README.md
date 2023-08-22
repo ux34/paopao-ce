@@ -33,7 +33,8 @@ kooboo-spa -h {booboo Site} -u {username} -p {password}
   - 【优化】 发布动态刷新话题
   - 【优化】 清空搜索后重新加载列表
   - 【优化】 最后回复时间为空时显示错误时间
-
+  ### v1.1(2023-08-22) - ux34
+  - 【新增】i18n
   
 </details>
 

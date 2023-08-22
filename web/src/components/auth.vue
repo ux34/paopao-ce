@@ -12,7 +12,7 @@
     >
         <div class="auth-wrap">
             <n-card :bordered="false">
-                <n-space justify="center"><n-h3><n-text type="success">账号登录</n-text></n-h3></n-space>
+                <n-space justify="center"><n-h3><n-text type="success">{{$t('accountLogin')}}</n-text></n-h3></n-space>
                 <n-button
                     type="primary"
                     block
@@ -21,7 +21,7 @@
                     :loading="loading"
                     @click="handleKoobooLogin"
                 >
-                    Kooboo一键登录
+                {{$t('koobooOneClickLogin')}}
                 </n-button>
             </n-card>
             <!-- <n-card :bordered="false">
@@ -75,7 +75,7 @@
                     size="large"
                     justify-content="space-evenly"
                 >
-                    <n-tab-pane name="signin" tab="登录">
+                    <n-tab-pane name="signin" tab="login">
                         <n-form
                             ref="loginRef"
                             :model="loginForm"
@@ -118,13 +118,13 @@
                             登录
                         </n-button>
                     </n-tab-pane>
-                    <n-tab-pane name="signup" tab="注册">
+                    <n-tab-pane name="signup" tab="register">
                         <n-form
                             ref="registerRef"
                             :model="registerForm"
                             :rules="registerRule"
                         >
-                            <n-form-item-row label="用户名" path="username">
+                            <n-form-item-row label="username" path="username">
                                 <n-input
                                     v-model:value="registerForm.username"
                                     placeholder="用户名注册后无法修改"
@@ -139,11 +139,11 @@
                                     @keyup.enter.prevent="handleRegister"
                                 />
                             </n-form-item-row>
-                            <n-form-item-row label="重复密码" path="repassword">
+                            <n-form-item-row label="repeatPassword" path="repassword">
                                 <n-input
                                     type="password"
                                     show-password-on="mousedown"
-                                    placeholder="请再次输入密码"
+                                    placeholder="enterNewPasswordAgain"
                                     v-model:value="registerForm.repassword"
                                     @keyup.enter.prevent="handleRegister"
                                 />
@@ -171,7 +171,9 @@ import { ref, reactive, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { userLogin, userRegister, userInfo } from '@/api/auth';
 import type { FormInst, FormItemRule } from 'naive-ui';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const allowUserRegister = ref(import.meta.env.VITE_ALLOW_USER_REGISTER.toLowerCase() === 'true')
 const store = useStore();
 
@@ -209,7 +211,7 @@ const registerRule = {
                     registerForm.password.length >= value.length
                 );
             },
-            message: '两次密码输入不一致',
+            message: 'passwordsDoNotMatch',
             trigger: 'input',
         },
     ],

@@ -32,8 +32,8 @@
                             store.state.userInfo.is_admin ||
                             store.state.userInfo.id === comment.user.id
                         "
-                        negative-text="取消"
-                        positive-text="确认"
+                        :negative-text="$t('cancel')"
+                        :positive-text="$t('confirm')"
                         @positive-click="execDelAction"
                     >
                         <template #trigger>
@@ -49,9 +49,7 @@
                                     </n-icon>
                                 </template>
                             </n-button>
-                        </template>
-                        是否确认删除？
-                    </n-popconfirm>
+                        </template>{{$t('confirmDelete')}}</n-popconfirm>
                 </div>
             </template>
             <template #description v-if="comment.texts.length > 0">
@@ -100,7 +98,9 @@ import { useRouter } from 'vue-router';
 import { parsePostTag } from '@/utils/content';
 import { Trash } from '@vicons/tabler';
 import { deleteComment } from '@/api/post';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const store = useStore();
 const router = useRouter();
 const replyAtUserID = ref(0);
@@ -140,7 +140,7 @@ const doClickText = (e: MouseEvent, id: number | string) => {
         if (d.length === 2) {
             store.commit('refresh');
             if (d[0] === 'tag') {
-                window.$message.warning('评论内的无效话题');
+                window.$message.warning($t('invalidTopicInComment'));
             } else {
                 router.push({
                     name: 'user',
@@ -171,7 +171,7 @@ const execDelAction = () => {
         id: comment.value.id,
     })
         .then((res) => {
-            window.$message.success('删除成功');
+            window.$message.success($t('deleteSuccess'));
 
             setTimeout(() => {
                 reload();

@@ -13,7 +13,7 @@
             </div>
             <div v-else>
                 <div class="empty-wrap" v-if="list.length === 0">
-                    <n-empty size="large" description="暂无数据" />
+                    <n-empty size="large" :description="$t('noDataAvailable')" />
                 </div>
                 <div v-if="store.state.desktopModelShow">
                     <n-list-item v-for="post in list" :key="post.id">
@@ -44,7 +44,9 @@ import { ref, onMounted, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import { getPosts } from '@/api/post';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
@@ -55,17 +57,17 @@ const page = ref(+(route.query.p as string) || 1);
 const pageSize = ref(20);
 const totalPage = ref(0);
 const title = computed(() => {
-    let t = '泡泡广场';
+    let title = $t('app.homeTitle');
 
     if (route.query && route.query.q) {
         if (route.query.t && route.query.t === 'tag') {
-            t = '#' + decodeURIComponent(route.query.q as string);
+            title = '#' + decodeURIComponent(route.query.q as string);
         } else {
-            t = '搜索: ' + decodeURIComponent(route.query.q as string);
+            title = $t('search') + ': ' + decodeURIComponent(route.query.q as string);
         }
     }
 
-    return t;
+    return title;
 });
 
 const loadPosts = () => {

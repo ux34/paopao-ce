@@ -15,9 +15,7 @@
                     <n-icon>
                         <cloud-download-outline />
                     </n-icon>
-                </template>
-                附件
-            </n-button>
+                </template>{{$t('attachments')}}</n-button>
         </div>
 
         <!-- 删除确认 -->
@@ -25,10 +23,10 @@
             v-model:show="showDownloadModal"
             :mask-closable="false"
             preset="dialog"
-            title="下载提示"
+            :title="$t('downloadPrompt')"
             :content="downloadTip"
-            positive-text="确认下载"
-            negative-text="取消"
+            :positive-text="$t('confirmDownload')"
+            :negative-text="$t('cancel')"
             icon-placement="top"
             @positive-click="execDownloadAction"
         />
@@ -39,7 +37,9 @@
 import { h, ref } from 'vue';
 import { CloudDownloadOutline } from '@vicons/ionicons5';
 import { precheckAttachment, getAttachment } from '@/api/user';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const props = withDefaults(
     defineProps<{
         attachments: Item.PostItemProps[];
@@ -58,7 +58,7 @@ const download = (attachment: Item.PostItemProps) => {
     showDownloadModal.value = true;
     attachmentID.value = attachment.id;
 
-    downloadTip.value = '这是一个免费附件，您可以直接下载？';
+    downloadTip.value = $t('freeAttachmentDownloadPrompt');
     if (attachment.type === 8) {
         downloadTip.value = () =>
             h('div', {}, [
@@ -81,7 +81,7 @@ const download = (attachment: Item.PostItemProps) => {
                             h(
                                 'p',
                                 {},
-                                '此次下载您已支付或无需付费，请确认下载'
+                                $t('paidOrFreeDownloadPrompt')
                             ),
                         ]);
                 }

@@ -5,7 +5,7 @@
         class="whisper-card"
         preset="card"
         size="small"
-        title="私信"
+        :title="$t('privateMessage')"
         :mask-closable="false"
         :bordered="false"
         :style="{
@@ -14,7 +14,7 @@
     >
         <div class="whisper-wrap">
             <n-alert :show-icon="false">
-                即将发送私信给:
+                {{$t('sendingPrivateMessageTo')}}
                 <n-ellipsis style="max-width: 100%">
                     <n-gradient-text type="success">
                         {{ user.nickname }}@{{ user.username }}
@@ -24,7 +24,7 @@
             <div class="whisper-line">
                 <n-input
                     type="textarea"
-                    placeholder="请输入私信内容（请勿发送不和谐内容，否则将会被封号）"
+                    :placeholder="$t('enterPrivateMessageContent')"
                     :autosize="{
                         minRows: 5,
                         maxRows: 10,
@@ -41,9 +41,7 @@
                     type="primary"
                     :loading="loading"
                     @click="sendWhisper"
-                >
-                    发送
-                </n-button>
+                >{{$t('send')}}</n-button>
             </div>
         </div>
     </n-modal>
@@ -52,7 +50,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { sendUserWhisper } from '@/api/user';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const props = withDefaults(
     defineProps<{
         show: boolean;
@@ -78,7 +78,7 @@ const sendWhisper = () => {
         content: content.value,
     })
         .then((res: any) => {
-            window.$message.success('发送成功');
+            window.$message.success($t('sendSuccess'));
             loading.value = false;
             content.value = '';
 

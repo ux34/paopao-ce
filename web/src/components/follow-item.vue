@@ -20,15 +20,13 @@
                  <span class="username-wrap"> @{{ contact.username }} </span>      
                 <n-tag
                     v-if="contact.is_following"
-                    class="top-tag" type="success" size="small" round>
-                    已关注
-                </n-tag>
+                    class="top-tag" type="success" size="small" round>{{$t('followed')}}</n-tag>
                 <div class="user-info">
                     <span class="info-item">
                         UID. {{ contact.user_id }}
                     </span>
                      <span class="info-item">
-                        {{ formatDate(contact.created_on) }}&nbsp;加入
+                        {{$t('Joined in {date}', {date: formatDate(contact.created_on)}) }}
                     </span>
                 </div>
             </template>
@@ -68,7 +66,9 @@ import {
     BodyOutline,
     WalkOutline
 } from '@vicons/ionicons5';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const dialog = useDialog();
 const router = useRouter();
 
@@ -82,17 +82,17 @@ const renderIcon = (icon: Component) => {
 
 const handleFollowUser = () => {
     dialog.success({
-        title: '提示',
+        title: $t('prompt'),
         content:
-            '确定' + (props.contact.is_following ? '取消关注' : '关注') + '该用户吗？',
-        positiveText: '确定',
-        negativeText: '取消',
+            $t('confirmAction') + (props.contact.is_following ? $t('unfollow') : $t('follow')) + $t('该用户吗？'),
+        positiveText: $t('confirmAction'),
+        negativeText: $t('cancel'),
         onPositiveClick: () => {
             if (props.contact.is_following) {
                 unfollowUser({
                     user_id: props.contact.user_id,
                 }).then((_res) => {
-                    window.$message.success('取消关注成功');
+                    window.$message.success($t('unfollowSuccess'));
                     props.contact.is_following=false;
                 })
                 .catch((err) => {
@@ -102,7 +102,7 @@ const handleFollowUser = () => {
                 followUser({
                     user_id: props.contact.user_id,
                 }).then((_res) => {
-                    window.$message.success('关注成功');
+                    window.$message.success($t('followSuccess'));
                     props.contact.is_following=true;
                 })
                 .catch((err) => {
@@ -135,13 +135,13 @@ const followOptions = computed(() => {
     let options: DropdownOption[] = [];
     if (props.contact.is_following) {
         options.push({
-            label: '取消关注',
+            label: $t('unfollow'),
             key: 'unfollow',
             icon: renderIcon(WalkOutline)
         })
     } else {
         options.push({
-            label: '关注',
+            label: $t('follow'),
             key: 'follow',
             icon: renderIcon(BodyOutline)
         })

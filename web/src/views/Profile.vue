@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-nav title="主页" />
+        <main-nav :title="$t('home')" />
 
         <n-list
             class="main-content-wrap profile-wrap"
@@ -16,13 +16,11 @@
                     <div class="username">
                         <strong>{{ store.state.userInfo.nickname }}</strong>
                         <span> @{{ store.state.userInfo.username }} </span>
-                        <n-tag v-if="store.state.userInfo.is_admin" class="top-tag" type="error" size="small" round>
-                            管理员
-                        </n-tag>
+                        <n-tag v-if="store.state.userInfo.is_admin" class="top-tag" type="error" size="small" round>{{$t('administrator')}}</n-tag>
                     </div>
                     <div class="userinfo">
                         <span class="info-item">UID. {{ store.state.userInfo.id }} </span>
-                        <span class="info-item">{{ formatDate(store.state.userInfo.created_on) }}&nbsp;加入</span>
+                        <span class="info-item">{{$t('Joined in {date}', {date: formatDate(store.state.userInfo.created_on)}) }}</span>
                     </div>
                     <div v-if="false" class="userinfo">
                         <span class="info-item">
@@ -61,18 +59,18 @@
                 </div>
             </div>
             <n-tabs class="profile-tabs-wrap" type="line" animated @update:value="changeTab">
-                <n-tab-pane name="post" tab="泡泡"> </n-tab-pane>
-                <n-tab-pane name="comment" tab="评论"> </n-tab-pane>
-                <n-tab-pane name="highlight" tab="亮点"> </n-tab-pane>
-                <n-tab-pane name="media" tab="图文"> </n-tab-pane>
-                <n-tab-pane name="star" tab="喜欢"> </n-tab-pane>
+                <n-tab-pane name="post" :tab="$t('tabs.bubble')"> </n-tab-pane>
+                <n-tab-pane name="comment" :tab="$t('tabs.comments')"> </n-tab-pane>
+                <n-tab-pane name="highlight" :tab="$t('tabs.highlights')"> </n-tab-pane>
+                <n-tab-pane name="media" :tab="$t('tabs.media')"> </n-tab-pane>
+                <n-tab-pane name="star" :tab="$t('tabs.likes')"> </n-tab-pane>
             </n-tabs>
             <div v-if="loading" class="skeleton-wrap">
                 <post-skeleton :num="pageSize" />
             </div>
             <div v-else>
                 <div class="empty-wrap" v-if="list.length === 0">
-                    <n-empty size="large" description="暂无数据" />
+                    <n-empty size="large" :description="$t('noDataAvailable')" />
                 </div>
 
                 <div v-if="store.state.desktopModelShow">
@@ -105,7 +103,9 @@ import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { getUserPosts } from '@/api/user';
 import { formatDate } from '@/utils/formatTime';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const store = useStore();
 const route = useRoute();
 

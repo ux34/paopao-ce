@@ -20,7 +20,7 @@
                     :options="optionsRef"
                     @search="handleSearch"
                     @update:value="changeContent"
-                    placeholder="说说您的新鲜事..."
+                    :placeholder="$t('shareYourNews')"
                 />
             </div>
 
@@ -183,9 +183,7 @@
                             type="primary"
                             secondary
                             round
-                        >
-                            发布
-                        </n-button>
+                        >{{$t('post')}}</n-button>
                     </div>
                 </div>
 
@@ -200,7 +198,7 @@
                             v-model:value="attachmentPrice"
                             :min="0"
                             :max="100000"
-                            placeholder="请输入附件价格，0为免费附件"
+                            placeholder="'请输入附件价格，0为免费附件'"
                         >
                             <template #prefix>
                                 <span> 附件价格￥</span>
@@ -226,18 +224,18 @@
             <div class="link-wrap" v-if="showLinkSet">
                 <n-dynamic-input
                     v-model:value="links"
-                    placeholder="请输入以http(s)://开头的链接"
+                    :placeholder="$t('enterLinkStartingWithHTTP')"
                     :min="0"
                     :max="3"
                 >
-                    <template #create-button-default> 创建链接 </template>
+                    <template #create-button-default>{{$t('createLink')}}</template>
                 </n-dynamic-input>
             </div>
         </div>
 
         <div class="compose-wrap" v-else>
             <div class="login-wrap">
-                <span class="login-banner"> 登录后，精彩更多</span>
+                <span class="login-banner">{{$t('moreExcitementAfterLogin')}}</span>
             </div>
             <div v-if="!allowUserRegister" class="login-only-wrap">
                 <n-button
@@ -246,9 +244,7 @@
                     round
                     type="primary"
                     @click="triggerAuth('signin')"
-                >
-                    登录
-                </n-button>
+                >{{$t('login')}}</n-button>
             </div>
             <div v-if="allowUserRegister" class="login-wrap">
                 <n-button
@@ -257,18 +253,14 @@
                     round
                     type="primary"
                     @click="triggerAuth('signin')"
-                >
-                    登录
-                </n-button>
+                >{{$t('login')}}</n-button>
                 <n-button
                     strong
                     secondary
                     round
                     type="info"
                     @click="triggerAuth('signup')"
-                >
-                    注册
-                </n-button>
+                >{{$t('register')}}</n-button>
             </div>
         </div>
     </div>
@@ -293,7 +285,9 @@ import { parsePostTag } from '@/utils/content';
 import { isZipFile } from '@/utils/isZipFile';
 import type { MentionOption, UploadFileInfo, UploadInst } from 'naive-ui';
 import { VisibilityEnum, PostItemTypeEnum } from '@/utils/IEnum';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 
 
 const emit = defineEmits<{
@@ -320,9 +314,9 @@ const attachmentContents = ref<Item.AttachmentProps[]>([]);
 const visitType = ref<VisibilityEnum>(VisibilityEnum.FRIEND);
 const defaultVisitType = ref<VisibilityEnum>(VisibilityEnum.FRIEND)
 const visibilities = [
-    {value: VisibilityEnum.PUBLIC, label: "公开"}
-    , {value: VisibilityEnum.PRIVATE, label: "私密"}
-    , {value: VisibilityEnum.FRIEND, label: "好友可见"}
+    {value: VisibilityEnum.PUBLIC, label: $t("public")}
+    , {value: VisibilityEnum.PRIVATE, label: $t("private")}
+    , {value: VisibilityEnum.FRIEND, label: $t("visibleToFriends")}
 ];
 
 const defaultTweetMaxLength = Number(import.meta.env.VITE_DEFAULT_TWEET_MAX_LENGTH)
@@ -431,12 +425,12 @@ const beforeUpload = async (data: any) => {
             data.file.file?.type
         )
     ) {
-        window.$message.warning('图片仅允许 png/jpg/gif 格式');
+        window.$message.warning($t('imagesAllowedFormats'));
         return false;
     }
 
     if (uploadType.value === 'image' && data.file.file?.size > 10485760) {
-        window.$message.warning('图片大小不能超过10MB');
+        window.$message.warning($t('imageSizeLimit'));
         return false;
     }
 
@@ -445,7 +439,7 @@ const beforeUpload = async (data: any) => {
         uploadType.value === 'public/video' &&
         !['video/mp4', 'video/quicktime'].includes(data.file.file?.type)
     ) {
-        window.$message.warning('视频仅允许 mp4/mov 格式');
+        window.$message.warning($t('videosAllowedFormats'));
         return false;
     }
 
@@ -453,19 +447,19 @@ const beforeUpload = async (data: any) => {
         uploadType.value === 'public/video' &&
         data.file.file?.size > 104857600
     ) {
-        window.$message.warning('视频大小不能超过100MB');
+        window.$message.warning($t('videoSizeLimit'));
         return false;
     }
     // 附件类型校验
     if (
         uploadType.value === 'attachment' && !(await isZipFile(data.file.file))
     ) {
-        window.$message.warning('附件仅允许 zip 格式');
+        window.$message.warning($t('attachmentsAllowedFormats'));
         return false;
     }
 
     if (uploadType.value === 'attachment' && data.file.file?.size > 104857600) {
-        window.$message.warning('附件大小不能超过100MB');
+        window.$message.warning($t('attachmentSizeLimit'));
         return false;
     }
 
@@ -496,7 +490,7 @@ const finishUpload = ({ file, event }: any): any => {
             }
         }
     } catch (error) {
-        window.$message.error('上传失败');
+        window.$message.error($t('uploadFailed'));
     }
 };
 const failUpload = ({ file, event }: any): any => {
@@ -504,7 +498,7 @@ const failUpload = ({ file, event }: any): any => {
         let data = JSON.parse(event.target?.response);
 
         if (data.code !== 0) {
-            let errMsg = data.msg || '上传失败';
+            let errMsg = data.msg || $t('uploadFailed');
             if (data.details && data.details.length > 0) {
                 data.details.map((detail: string) => {
                     errMsg += ':' + detail;
@@ -513,7 +507,7 @@ const failUpload = ({ file, event }: any): any => {
             window.$message.error(errMsg);
         }
     } catch (error) {
-        window.$message.error('上传失败');
+        window.$message.error($t('uploadFailed'));
     }
 };
 const removeUpload = ({ file }: any) => {
@@ -534,7 +528,7 @@ const removeUpload = ({ file }: any) => {
 // 发布动态
 const submitPost = () => {
     if (content.value.trim().length === 0) {
-        window.$message.warning('请输入内容哦');
+        window.$message.warning($t('enterContent'));
         return;
     }
 
@@ -594,7 +588,7 @@ const submitPost = () => {
         visibility: visitType.value
     })
         .then((res) => {
-            window.$message.success('发布成功');
+            window.$message.success($t('postSuccess'));
             submitting.value = false;
             emit('post-success', res);
 

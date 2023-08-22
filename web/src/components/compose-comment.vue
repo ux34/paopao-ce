@@ -24,8 +24,8 @@
                     @focus="focusComment"
                     :placeholder="
                         props.lock === 1
-                            ? '泡泡已被锁定，回复功能已关闭'
-                            : '快来评论两句吧...'
+                            ? $t('bubbleLockedReplyDisabled')
+                            : $t('commentPlaceholder')
                     "
                 />
             </div>
@@ -104,9 +104,7 @@
                             class="cancel-btn"
                             size="small"
                             @click="cancelComment"
-                        >
-                            取消
-                        </n-button>
+                        >{{$t('cancel')}}</n-button>
                         <n-button
                             :loading="submitting"
                             @click="submitPost"
@@ -114,9 +112,7 @@
                             secondary
                             size="small"
                             round
-                        >
-                            发布
-                        </n-button>
+                        >{{$t('post')}}</n-button>
                     </div>
                 </div>
 
@@ -128,7 +124,7 @@
 
         <div class="compose-wrap" v-else>
             <div class="login-wrap">
-                <span class="login-banner"> 登录后，精彩更多</span>
+                <span class="login-banner">{{$t('moreExcitementAfterLogin')}}</span>
             </div>
             <div v-if="!allowUserRegister" class="login-only-wrap">
                 <n-button
@@ -137,9 +133,7 @@
                     round
                     type="primary"
                     @click="triggerAuth('signin')"
-                >
-                    登录
-                </n-button>
+                >{{$t('login')}}</n-button>
             </div>
             <div v-if="allowUserRegister" class="login-wrap">
                 <n-button
@@ -148,18 +142,14 @@
                     round
                     type="primary"
                     @click="triggerAuth('signin')"
-                >
-                    登录
-                </n-button>
+                >{{$t('login')}}</n-button>
                 <n-button
                     strong
                     secondary
                     round
                     type="info"
                     @click="triggerAuth('signup')"
-                >
-                    注册
-                </n-button>
+                >{{$t('register')}}</n-button>
             </div>
         </div>
     </div>
@@ -177,7 +167,9 @@ import { createComment } from '@/api/post';
 import { getSuggestUsers } from '@/api/user';
 import { parsePostTag } from '@/utils/content';
 import type { MentionOption, UploadFileInfo, UploadInst } from 'naive-ui';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const emit = defineEmits<{
     (e: 'post-success'): void;
 }>();
@@ -268,7 +260,7 @@ const beforeUpload = async (data: any) => {
             (data.file as any).file?.type
         )
     ) {
-        window.$message.warning('图片仅允许 png/jpg/gif 格式');
+        window.$message.warning($t('imagesAllowedFormats'));
         return false;
     }
 
@@ -276,7 +268,7 @@ const beforeUpload = async (data: any) => {
         uploadType.value === 'image' &&
         (data.file as any).file?.size > 10485760
     ) {
-        window.$message.warning('图片大小不能超过10MB');
+        window.$message.warning($t('imageSizeLimit'));
         return false;
     }
 
@@ -295,7 +287,7 @@ const finishUpload = ({ file, event }: any): any => {
             }
         }
     } catch (error) {
-        window.$message.error('上传失败');
+        window.$message.error($t('uploadFailed'));
     }
 };
 const failUpload = ({ file, event }: any): any => {
@@ -303,7 +295,7 @@ const failUpload = ({ file, event }: any): any => {
         let data = JSON.parse(event.target?.response);
 
         if (data.code !== 0) {
-            let errMsg = data.msg || '上传失败';
+            let errMsg = data.msg || $t('uploadFailed');
             if (data.details && data.details.length > 0) {
                 data.details.map((detail: string) => {
                     errMsg += ':' + detail;
@@ -312,7 +304,7 @@ const failUpload = ({ file, event }: any): any => {
             window.$message.error(errMsg);
         }
     } catch (error) {
-        window.$message.error('上传失败');
+        window.$message.error($t('uploadFailed'));
     }
 };
 const removeUpload = ({ file }: any) => {
@@ -337,7 +329,7 @@ const cancelComment = () => {
 // 发布动态
 const submitPost = () => {
     if (content.value.trim().length === 0) {
-        window.$message.warning('请输入内容哦');
+        window.$message.warning($t('enterContent'));
         return;
     }
 
@@ -368,7 +360,7 @@ const submitPost = () => {
         users: Array.from(new Set(users)),
     })
         .then((res) => {
-            window.$message.success('发布成功');
+            window.$message.success($t('postSuccess'));
             submitting.value = false;
             emit('post-success');
 

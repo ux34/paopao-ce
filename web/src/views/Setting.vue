@@ -1,7 +1,7 @@
 <template>
     <div>
-        <main-nav title="设置" theme />
-        <n-card title="基本信息" size="small" class="setting-card">
+        <main-nav :title="$t('settings')" theme />
+        <n-card :title="$t('basicInformation')" size="small" class="setting-card">
             <div class="base-line avatar">
                 <n-avatar
                     class="avatar-img"
@@ -25,11 +25,11 @@
                     @before-upload="beforeUpload"
                     @finish="finishUpload"
                 >
-                    <n-button size="small">更改头像</n-button>
+                    <n-button size="small">{{$t('changeAvatar')}}</n-button>
                 </n-upload>
             </div>
             <div class="base-line">
-                <span class="base-label">昵称</span>
+                <span class="base-label">{{$t('nickname')}}</span>
                 <div v-if="!showNicknameEdit">
                     {{ store.state.userInfo.nickname }}
                 </div>
@@ -40,7 +40,7 @@
                     v-model:value="store.state.userInfo.nickname"
                     type="text"
                     size="small"
-                    placeholder="请输入昵称"
+                    :placeholder="$t('enterNickname')"
                     @blur="handleNicknameChange"
                     :maxlength="16"
                 />
@@ -66,13 +66,13 @@
                 </n-button>
             </div>
             <div class="base-line">
-                <span class="base-label">用户名</span> @{{
+                <span class="base-label">{{$t('username')}}</span> @{{
                     store.state.userInfo.username
                 }}
             </div>
         </n-card>
 
-        <n-card v-if="allowPhoneBind" title="手机号" size="small" class="setting-card">
+        <n-card v-if="allowPhoneBind" :title="$t('mobileNumber')" size="small" class="setting-card">
             <div
                 v-if="
                     store.state.userInfo.phone &&
@@ -87,20 +87,16 @@
                     type="success"
                     v-if="!showPhoneBind && store.state.userInfo.status == 1"
                     @click="showPhoneBind = true"
-                >
-                    换绑手机
-                </n-button>
+                >{{$t('changeMobileBinding')}}</n-button>
             </div>
             <div v-else>
-                <n-alert title="手机绑定提示" type="warning">
-                    成功绑定手机后，才能进行换头像、发动态、回复等交互~<br />
+                <n-alert :title="$t('手机绑定提示')" type="warning">
+                    {{$t('mobileBindingPrompt')}}<br />
                     <a
                         class="hash-link"
                         @click="showPhoneBind = true"
                         v-if="!showPhoneBind"
-                    >
-                        立即绑定
-                    </a>
+                    >{{$t('bindNow')}}</a>
                 </n-alert>
             </div>
 
@@ -110,19 +106,19 @@
                     :model="modelData"
                     :rules="bindRules"
                 >
-                    <n-form-item path="phone" label="手机号">
+                    <n-form-item path="phone" :label="$t('mobileNumber')">
                         <n-input
                             :value="modelData.phone"
                             @update:value="(v: string) => (modelData.phone = v.trim())"
-                            placeholder="请输入中国大陆手机号"
+                            :placeholder="$t('enterMainlandChinaMobile')"
                             @keydown.enter.prevent
                         />
                     </n-form-item>
-                    <n-form-item path="img_captcha" label="图形验证码">
+                    <n-form-item path="img_captcha" :label="$t('captcha')">
                         <div class="captcha-img-wrap">
                             <n-input
                                 v-model:value="modelData.imgCaptcha"
-                                placeholder="请输入图形验证码后获取验证码"
+                                :placeholder="$t('enterCaptchaForVerificationCode')"
                             />
                             <div class="captcha-img">
                                 <img
@@ -133,11 +129,11 @@
                             </div>
                         </div>
                     </n-form-item>
-                    <n-form-item path="phone_captcha" label="短信验证码">
+                    <n-form-item path="phone_captcha" :label="$t('smsVerificationCode')">
                         <n-input-group>
                             <n-input
                                 v-model:value="modelData.phone_captcha"
-                                placeholder="请输入收到的短信验证码"
+                                :placeholder="$t('enterReceivedSmsVerificationCode')"
                             />
                             <n-button
                                 type="primary"
@@ -149,7 +145,7 @@
                                 {{
                                     smsCounter > 0 && smsDisabled
                                         ? smsCounter + 's后重新发送'
-                                        : '发送验证码'
+                                        : $t('sendVerificationCode')
                                 }}
                             </n-button>
                         </n-input-group>
@@ -161,18 +157,14 @@
                                     quaternary
                                     round
                                     @click="showPhoneBind = false"
-                                >
-                                    取消
-                                </n-button>
+                                >{{$t('cancel')}}</n-button>
                                 <n-button
                                     secondary
                                     round
                                     type="primary"
                                     :loading="binding"
                                     @click="handlePhoneBind"
-                                >
-                                    绑定
-                                </n-button>
+                                >{{$t('bind')}}</n-button>
                             </div>
                         </n-col>
                     </n-row>
@@ -180,7 +172,7 @@
             </div>
         </n-card>
 
-        <n-card v-if="allowActivation" title="激活码" size="small" class="setting-card">
+        <n-card v-if="allowActivation" :title="$t('activationCode')" size="small" class="setting-card">
             <div
                 v-if="
                     store.state.userInfo.activation &&
@@ -195,20 +187,16 @@
                     type="success"
                     v-if="!showActivation"
                     @click="showActivation = true"
-                >
-                    重新激活
-                </n-button>
+                >{{$t('reactivate')}}</n-button>
             </div>
             <div v-else>
-                <n-alert title="激活码激活提示" type="warning">
+                <n-alert :title="$t('激活码激活提示')" type="warning">
                     成功激活后后，才能发（公开/好友可见）动态、回复~<br />
                     <a
                         class="hash-link"
                         @click="showActivation = true"
                         v-if="!showActivation"
-                    >
-                    立即激活
-                    </a>
+                    >{{$t('activationCodeActivationPrompt')}}</a>
                 </n-alert>
             </div>
 
@@ -218,19 +206,19 @@
                     :model="activateData"
                     :rules="activateRules"
                 >
-                    <n-form-item path="activate_code" label="激活码">
+                    <n-form-item path="activate_code" :label="$t('activationCode')">
                         <n-input
                             :value="activateData.activate_code"
                             @update:value="(v: string) => (activateData.activate_code = v.trim())"
-                            placeholder="请输入激活码"
+                            :placeholder="$t('enterActivationCode')"
                             @keydown.enter.prevent
                         />
                     </n-form-item>
-                    <n-form-item path="img_captcha" label="图形验证码">
+                    <n-form-item path="img_captcha" :label="$t('captcha')">
                         <div class="captcha-img-wrap">
                             <n-input
                                 v-model:value="activateData.imgCaptcha"
-                                placeholder="请输入图形验证码后获取验证码"
+                                :placeholder="$t('enterCaptchaForVerificationCode')"
                             />
                             <div class="captcha-img">
                                 <img
@@ -248,18 +236,14 @@
                                     quaternary
                                     round
                                     @click="showActivation = false"
-                                >
-                                    取消
-                                </n-button>
+                                >{{$t('cancel')}}</n-button>
                                 <n-button
                                     secondary
                                     round
                                     type="primary"
                                     :loading="activating"
                                     @click="handleActivation"
-                                >
-                                    激活
-                                </n-button>
+                                >{{$t('activate')}}</n-button>
                             </div>
                         </n-col>
                     </n-row>
@@ -267,32 +251,28 @@
             </div>
         </n-card>
 
-        <!-- <n-card title="账户安全" size="small" class="setting-card">
-            您已设置密码
-            <n-button
+        <!-- <n-card :title="$t('accountSecurity')" size="small" class="setting-card">{{$t('passwordHasBeenSet')}}<n-button
                 quaternary
                 round
                 type="success"
                 v-if="!showPasswordSetting"
                 @click="showPasswordSetting = true"
-            >
-                重置密码
-            </n-button>
+            >{{$t('resetPassword')}}</n-button>
             <div class="phone-bind-wrap" v-if="showPasswordSetting">
                 <n-form ref="formRef" :model="modelData" :rules="passwordRules">
-                    <n-form-item path="old_password" label="旧密码">
+                    <n-form-item path="old_password" :label="$t('currentPassword')">
                         <n-input
                             v-model:value="modelData.old_password"
                             type="password"
-                            placeholder="请输入当前密码"
+                            :placeholder="$t('请输入当前密码')"
                             @keydown.enter.prevent
                         />
                     </n-form-item>
-                    <n-form-item path="password" label="新密码">
+                    <n-form-item path="password" :label="$t('newPassword')">
                         <n-input
                             v-model:value="modelData.password"
                             type="password"
-                            placeholder="请输入新密码"
+                            :placeholder="$t('enterNewPassword')"
                             @input="handlePasswordInput"
                             @keydown.enter.prevent
                         />
@@ -301,13 +281,13 @@
                         ref="rPasswordFormItemRef"
                         first
                         path="reenteredPassword"
-                        label="重复密码"
+                        :label="$t('repeatPassword')"
                     >
                         <n-input
                             v-model:value="modelData.reenteredPassword"
                             :disabled="!modelData.password"
                             type="password"
-                            placeholder="请再次输入密码"
+                            :placeholder="$t('enterNewPasswordAgain')"
                             @keydown.enter.prevent
                         />
                     </n-form-item>
@@ -318,18 +298,14 @@
                                     quaternary
                                     round
                                     @click="showPasswordSetting = false"
-                                >
-                                    取消
-                                </n-button>
+                                >{{$t('cancel')}}</n-button>
                                 <n-button
                                     secondary
                                     round
                                     type="primary"
                                     :loading="passwordSetting"
                                     @click="handleValidateButtonClick"
-                                >
-                                    更新
-                                </n-button>
+                                >{{$t('update')}}</n-button>
                             </div>
                         </n-col>
                     </n-row>
@@ -359,7 +335,9 @@ import type {
     FormInst,
     InputInst,
 } from 'naive-ui';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const uploadGateway = import.meta.env.VITE_HOST + '/v1/attachment';
 const uploadToken = 'Bearer ' + localStorage.getItem('PAOPAO_TOKEN');
 const uploadType = ref('public/avatar');
@@ -430,7 +408,7 @@ const finishUpload = ({ file, event }: any): any => {
                     avatar: data.data.content,
                 })
                     .then((res) => {
-                        window.$message.success('头像更新成功');
+                        window.$message.success($t('avatarUpdateSuccess'));
                         avatarRef.value?.clear();
 
                         store.commit('updateUserinfo', {
@@ -444,7 +422,7 @@ const finishUpload = ({ file, event }: any): any => {
             }
         }
     } catch (error) {
-        window.$message.error('上传失败');
+        window.$message.error($t('uploadFailed'));
     }
 };
 
@@ -478,7 +456,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
                 .then((res) => {
                     passwordSetting.value = false;
                     showPasswordSetting.value = false;
-                    window.$message.success('密码重置成功');
+                    window.$message.success($t('passwordResetSuccess'));
 
                     // 用户退出登录
                     store.commit('userLogout');
@@ -504,7 +482,7 @@ const handlePhoneBind = (e: MouseEvent) => {
                 .then((res) => {
                     binding.value = false;
                     showPhoneBind.value = false;
-                    window.$message.success('绑定成功');
+                    window.$message.success($t('bindingSuccess'));
 
                     store.commit('updateUserinfo', {
                         ...store.state.userInfo,
@@ -528,7 +506,7 @@ const handleActivation = (e: MouseEvent) => {
     e.preventDefault();
     activateFormRef.value?.validate((errors) => {
     if (activateData.imgCaptcha === '') {
-        window.$message.warning('请输入图片验证码');
+        window.$message.warning($t('enterImageCaptcha'));
         return;
     }
     sending.value = true;
@@ -542,7 +520,7 @@ const handleActivation = (e: MouseEvent) => {
                 .then((res) => {
                     activating.value = false;
                     showActivation.value = false;
-                    window.$message.success('激活成功');
+                    window.$message.success($t('activationSuccess'));
 
                     store.commit('updateUserinfo', {
                         ...store.state.userInfo,
@@ -592,7 +570,7 @@ const handleNicknameChange = () => {
     })
         .then((res) => {
             showNicknameEdit.value = false;
-            window.$message.success('昵称修改成功');
+            window.$message.success($t('nicknameChangeSuccess'));
         })
         .catch((err) => {
             showNicknameEdit.value = true;
@@ -604,7 +582,7 @@ const sendPhoneCaptcha = () => {
         return;
     }
     if (modelData.imgCaptcha === '') {
-        window.$message.warning('请输入图片验证码');
+        window.$message.warning($t('enterImageCaptcha'));
         return;
     }
     sending.value = true;
@@ -616,7 +594,7 @@ const sendPhoneCaptcha = () => {
         .then((res) => {
             smsDisabled.value = true;
             sending.value = false;
-            window.$message.success('发送成功');
+            window.$message.success($t('sendSuccess'));
 
             let s = setInterval(() => {
                 smsCounter.value--;
@@ -640,7 +618,7 @@ const bindRules = {
     phone: [
         {
             required: true,
-            message: '请输入手机号',
+            message: $t('enterMobileNumber'),
             trigger: ['input'],
             validator: (rule: FormItemRule, value: any) => {
                 return /^[1]+[3-9]{1}\d{9}$/.test(value);
@@ -650,7 +628,7 @@ const bindRules = {
     phone_captcha: [
         {
             required: true,
-            message: '请输入手机验证码',
+            message: $t('enterSmsVerificationCode'),
         },
     ],
 };
@@ -658,7 +636,7 @@ const activateRules = {
     activate_code: [
         {
             required: true,
-            message: '请输入激活码',
+            message: $t('enterActivationCode'),
             trigger: ['input'],
             validator: (rule: FormItemRule, value: any) => {
                 return /\d{6}$/.test(value);
@@ -670,29 +648,29 @@ const passwordRules = {
     password: [
         {
             required: true,
-            message: '请输入新密码',
+            message: $t('enterNewPassword'),
         },
     ],
     old_password: [
         {
             required: true,
-            message: '请输入旧密码',
+            message: $t('enterCurrentPassword'),
         },
     ],
     reenteredPassword: [
         {
             required: true,
-            message: '请再次输入密码',
+            message: $t('enterNewPasswordAgain'),
             trigger: ['input', 'blur'],
         },
         {
             validator: validatePasswordStartWith,
-            message: '两次密码输入不一致',
+            message: $t('passwordsDoNotMatch'),
             trigger: 'input',
         },
         {
             validator: validatePasswordSame,
-            message: '两次密码输入不一致',
+            message: $t('passwordsDoNotMatch'),
             trigger: ['blur', 'password-input'],
         },
     ],

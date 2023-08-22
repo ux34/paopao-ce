@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-nav title="收藏" />
+        <main-nav :title="$t('collection')" />
 
         <n-list class="main-content-wrap" bordered>
             <div v-if="loading" class="skeleton-wrap">
@@ -8,7 +8,7 @@
             </div>
             <div v-else>
                 <div class="empty-wrap" v-if="list.length === 0">
-                    <n-empty size="large" description="暂无数据" />
+                    <n-empty size="large" :description="$t('noDataAvailable')" />
                 </div>
 
                 <div v-if="store.state.desktopModelShow">

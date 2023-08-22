@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-nav title="公告" />
+        <main-nav :title="$t('announcement')" />
 
         <n-list class="main-content-wrap" bordered>
 
@@ -16,7 +16,7 @@
             </div>
             <div v-else>
                 <div class="empty-wrap" v-if="list.length === 0">
-                    <n-empty size="large" description="暂无数据" />
+                    <n-empty size="large" :description="$t('noDataAvailable')" />
                 </div>
 
                 <n-list-item v-for="bill in list" :key="bill.id">

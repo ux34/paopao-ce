@@ -10,7 +10,7 @@
             </div>
             <div class="user-info">
                 <span class="info-item">UID. {{ contact.user_id }}</span>
-                <span class="info-item">{{ formatDate(contact.created_on) }}&nbsp;加入</span>
+                <span class="info-item">{{$t('Joined in {date}', {date: formatDate(contact.created_on)}) }}</span>
             </div>
         </div>
     </div>
@@ -20,7 +20,9 @@
 import { useRouter } from 'vue-router';
 const router = useRouter();
 import { formatDate } from '@/utils/formatTime';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const props = withDefaults(defineProps<{
     contact: Item.ContactItemProps
 }>(), {})

@@ -24,27 +24,21 @@
                         type="warning"
                         size="small"
                         round
-                    >
-                        置顶
-                    </n-tag>
+                    >{{$t('pin')}}</n-tag>
                     <n-tag
                         v-if="post.visibility == 1"
                         class="top-tag"
                         type="error"
                         size="small"
                         round
-                    >
-                        私密
-                    </n-tag>
+                    >{{$t('private')}}</n-tag>
                     <n-tag
                         v-if="post.visibility == 2"
                         class="top-tag"
                         type="info"
                         size="small"
                         round
-                    >
-                        好友可见
-                    </n-tag>
+                    >{{$t('visibleToFriends')}}</n-tag>
                     <div>
                         <span class="timestamp-mobile">
                             {{ formatPrettyDate(post.created_on) }} {{ post.ip_loc }}
@@ -143,7 +137,9 @@ import {
 } from '@vicons/ionicons5';
 import { MoreHorizFilled } from '@vicons/material';
 import copy from "copy-to-clipboard";
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const router = useRouter();
 const store = useStore();
 const props = withDefaults(defineProps<{
@@ -161,7 +157,7 @@ const renderIcon = (icon: Component) => {
 const tweetOptions = computed(() => {
     let options: DropdownOption[] = [
         {
-            label: '复制链接',
+            label: $t('copyLink'),
             key: 'copyTweetLink',
             icon: renderIcon(ShareSocialOutline),
         },
@@ -175,7 +171,7 @@ const handleTweetAction = async (
     switch (item) {
         case 'copyTweetLink':
             copy(`${window.location.origin}/#/post?id=${post.value.id}`);
-            window.$message.success('链接已复制到剪贴板');
+            window.$message.success($t('linkCopiedToClipboard'));
             break;
         default:
             break;

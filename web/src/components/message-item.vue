@@ -23,7 +23,7 @@
                             @{{ message.sender_user.username }}
                         </span>
                     </span>
-                    <span class="nickname" v-else> 系统 </span>
+                    <span class="nickname" v-else>{{$t('system')}}</span>
                 </div>
             </template>
             <template #header-extra>
@@ -42,8 +42,7 @@
                             @click.stop="viewDetail(message)" class="hash-link view-link">
                             <n-icon>
                                 <share-outline />
-                            </n-icon> 查看详情
-                        </span>
+                            </n-icon>{{$t('viewDetails')}}</span>
                     </div>
 
                     <div v-if="message.type === 4" class="whisper-content-wrap">
@@ -56,24 +55,20 @@
                             class="hash-link view-link">
                             <n-icon>
                                 <checkmark-outline />
-                            </n-icon> 同意
-                        </span>
+                            </n-icon>{{$t('agree')}}</span>
                         <span v-if="message.reply_id === 1" @click.stop="rejectAddFriend(message)"
                             class="hash-link view-link">
                             <n-icon>
                                 <close-outline />
-                            </n-icon> 拒绝
-                        </span>
+                            </n-icon>{{$t('reject')}}</span>
                         <span v-if="message.reply_id === 2" class="status-info">
                             <n-icon>
                                 <checkmark-done-outline />
-                            </n-icon> 已同意
-                        </span>
+                            </n-icon>{{$t('agreed')}}</span>
                         <span v-if="message.reply_id === 3" class="status-info">
                             <n-icon>
                                 <close-outline />
-                            </n-icon> 已拒绝
-                        </span>
+                            </n-icon>{{$t('rejected')}}</span>
                     </div>
                 </n-alert>
             </template>
@@ -86,7 +81,9 @@ import { useRouter } from 'vue-router';
 import { ShareOutline, CheckmarkOutline, CloseOutline, CheckmarkDoneOutline } from '@vicons/ionicons5';
 import { readMessage, addFriend, rejectFriend } from '@/api/user';
 import { formatRelativeTime } from '@/utils/formatTime';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const defaultavatar = 'https://assets.paopao.info/public/avatar/default/admin.png';
 
 const router = useRouter();
@@ -108,7 +105,7 @@ const viewDetail = (message: Item.MessageProps) => {
                 },
             });
         } else {
-            window.$message.error('该动态已被删除');
+            window.$message.error($t('deletedBubble'));
         }
     }
 };
@@ -120,7 +117,7 @@ const agreeAddFriend = (message: Item.MessageProps) => {
     })
         .then((res) => {
             message.reply_id = 2;
-            window.$message.success('已同意添加好友');
+            window.$message.success($t('acceptedFriendRequest'));
         })
         .catch((err) => {
             console.log(err);
@@ -134,7 +131,7 @@ const rejectAddFriend = (message: Item.MessageProps) => {
     })
         .then((res) => {
             message.reply_id = 3;
-            window.$message.success('已拒绝添加好友');
+            window.$message.success($t('rejectedFriendRequest'));
         })
         .catch((err) => {
             console.log(err);

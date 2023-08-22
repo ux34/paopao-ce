@@ -5,7 +5,7 @@
         class="whisper-card"
         preset="card"
         size="small"
-        title="申请添加朋友"
+        :title="$t('sendFriendRequest')"
         :mask-closable="false"
         :bordered="false"
         :style="{
@@ -14,7 +14,7 @@
     >
         <div class="whisper-wrap">
              <n-alert :show-icon="false">
-                发送添加朋友申请给:
+                {{$t('发送添加朋友申请给:')}}
                 <n-ellipsis style="max-width: 100%">
                     <n-gradient-text type="success">
                         {{ user.nickname }}@{{ user.username }}
@@ -24,7 +24,7 @@
             <div class="whisper-line">
                 <n-input
                     type="textarea"
-                    placeholder="请输入真挚的问候语"
+                    :placeholder="$t('enterWarmGreeting')"
                     :autosize="{
                         minRows: 5,
                         maxRows: 10,
@@ -41,9 +41,7 @@
                     type="primary"
                     :loading="loading"
                     @click="sendWhisper"
-                >
-                    发送
-                </n-button>
+                >{{$t('send')}}</n-button>
             </div>
         </div>
     </n-modal>
@@ -78,7 +76,7 @@ const sendWhisper = () => {
         greetings: content.value,
     })
         .then((res: any) => {
-            window.$message.success('发送成功');
+            window.$message.success($t('sendSuccess'));
             loading.value = false;
             content.value = '';
 

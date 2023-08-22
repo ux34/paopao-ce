@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import router from './router'
 import store from './store'
 import App from './App.vue'
+import { i18n } from './locales'
 
 import type { MessageApiInjection } from 'naive-ui/lib/message/src/MessageProvider'
 
@@ -10,7 +11,7 @@ import 'vfonts/Lato.css'
 // 等宽字体
 import 'vfonts/FiraCode.css'
 
-createApp(App).use(router).use(store).mount('#app')
+createApp(App).use(i18n).use(router).use(store).mount('#app')
 
 declare global {
     interface Window {

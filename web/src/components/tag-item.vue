@@ -57,7 +57,9 @@ import { ref, onMounted, computed } from 'vue';
 import { MoreVertOutlined } from '@vicons/material';
 import type { DropdownOption } from 'naive-ui';
 import { stickTopic, followTopic, unfollowTopic } from '@/api/post';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const hasFollowing= ref(false);
 const props = withDefaults(
     defineProps<{
@@ -72,23 +74,23 @@ const tagOptions = computed(() => {
     let options: DropdownOption[] = [];
     if (props.tag.is_following === 0) {
         options.push({
-            label: '关注',
+            label: $t('follow'),
             key: 'follow',
         });
     } else {
         if (props.tag.is_top === 0) {
             options.push({
-                label: '置顶',
+                label: $t('pin'),
                 key: 'stick',
             });
         } else {
             options.push({
-                label: '取消置顶',
+                label: $t('unpin'),
                 key: 'unstick',
             });
         }
         options.push({
-            label: '取消关注',
+            label: $t('unfollow'),
             key: 'unfollow',
         });
     }
@@ -105,7 +107,7 @@ const handleTagAction = (
              })
             .then((res) => {
                 props.tag.is_following = 1
-                window.$message.success(`关注成功`);
+                window.$message.success($t(`followSuccess`));
             })
             .catch((err) => {
                 console.log(err);
@@ -117,7 +119,7 @@ const handleTagAction = (
              })
             .then((res) => {
                 props.tag.is_following = 0
-                window.$message.success(`取消关注`);
+                window.$message.success($t(`unfollowSuccess`));
             })
             .catch((err) => {
                 console.log(err);
@@ -129,7 +131,7 @@ const handleTagAction = (
              })
             .then((res) => {
                 props.tag.is_top = res.top_status
-                window.$message.success(`置顶成功`);
+                window.$message.success($t(`pinnedSuccess`));
             })
             .catch((err) => {
                 console.log(err);
@@ -141,7 +143,7 @@ const handleTagAction = (
              })
             .then((res) => {
                 props.tag.is_top = res.top_status
-                window.$message.success(`取消置顶`);
+                window.$message.success($t(`unpinnedSuccess`));
             })
             .catch((err) => {
                 console.log(err);

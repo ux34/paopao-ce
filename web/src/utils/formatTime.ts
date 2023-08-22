@@ -3,8 +3,6 @@
  */
 
 import moment from "moment";
-import "moment/dist/locale/zh-cn";
-moment.locale("zh-cn");
 
 export const formatTime = (time: number) => {
   return moment.unix(time).utc(true).format("YYYY-MM-DD HH:mm");
@@ -37,5 +35,5 @@ export const formatPrettyDate = (time: number) => {
 };
 
 export const formatDate = (time: number) => {
-  return moment.unix(time).utc(true).format("YYYY年MM月");
+  return moment.unix(time).utc(true).format("YYYY - MM");
 };

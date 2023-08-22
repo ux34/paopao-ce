@@ -4,7 +4,7 @@
             <n-input
                 round
                 clearable
-                placeholder="搜一搜..."
+                :placeholder="$t('placeholder.search')"
                 v-model:value="keyword"
                 @clear="handleCancelSearch"
                 @keyup.enter.prevent="handleSearch"
@@ -14,7 +14,7 @@
                 </template>
             </n-input>
         </div>
-        <n-card v-if="showFollowTopics" class="hottopic-wrap" title="关注话题" embedded :bordered="false" size="small">
+        <n-card v-if="showFollowTopics" class="hottopic-wrap" :title="$t('followTopic')" embedded :bordered="false" size="small">
             <n-spin :show="loading">
                 <div class="hot-tag-item" v-for="tag in followTags" :key="tag.id">
                     <router-link
@@ -36,7 +36,7 @@
                 </div>
             </n-spin>
         </n-card>
-        <n-card class="hottopic-wrap" title="热门话题" embedded :bordered="false" size="small">
+        <n-card class="hottopic-wrap" :title="$t('hotTopics')" embedded :bordered="false" size="small">
             <n-spin :show="loading">
                 <div class="hot-tag-item" v-for="tag in hotTags" :key="tag.id">
                     <router-link
@@ -88,7 +88,9 @@ import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import { getTags } from '@/api/post';
 import { Search } from '@vicons/ionicons5';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const hotTags = ref<Item.TagProps[]>([]);
 const followTags = ref<Item.TagProps[]>([]);
 const loading = ref(false);

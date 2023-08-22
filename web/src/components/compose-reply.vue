@@ -16,7 +16,7 @@
                         <thumb-up-outlined v-if="!hasThumbsUp" />
                         <thumb-up-twotone v-if="hasThumbsUp" class="show" />
                     </n-icon>
-                    <span class="upvote-count">{{ thumbsUpCount>0 ? thumbsUpCount : "赞" }}</span>
+                    <span class="upvote-count">{{ thumbsUpCount>0 ? thumbsUpCount : $t("like") }}</span>
                 </div>
                 <div v-if="!store.state.userLogined" class="action-item">
                     <n-icon size="medium">
@@ -29,12 +29,8 @@
                         <thumb-down-twotone v-if="hasThumbsDown" class="show" />
                     </n-icon>
                 </div>
-                <span class="show reply-btn" v-if="store.state.userLogined && !showReply" @click="switchReply(true)">
-                    回复
-                </span>
-                <span class="hide reply-btn" v-if="store.state.userLogined && showReply" @click="switchReply(false)">
-                    取消
-                </span>
+                <span class="show reply-btn" v-if="store.state.userLogined && !showReply" @click="switchReply(true)">{{$t('reply')}}</span>
+                <span class="hide reply-btn" v-if="store.state.userLogined && showReply" @click="switchReply(false)">{{$t('cancel')}}</span>
             </div>
         </div>
 
@@ -43,11 +39,9 @@
                 <n-input ref="inputInstRef" size="small" :placeholder="
                     props.atUsername
                         ? '@' + props.atUsername
-                        : '请输入回复内容..'
+                        : $t('placeholder.enterReplyContent')
                 " :maxlength="defaultReplyMaxLength" v-model:value="replyContent" show-count clearable />
-                <n-button type="primary" size="small" ghost :loading="submitting" @click="submitReply">
-                    回复
-                </n-button>
+                <n-button type="primary" size="small" ghost :loading="submitting" @click="submitReply">{{$t('reply')}}</n-button>
             </n-input-group>
         </div>
     </div>
@@ -66,7 +60,9 @@ import {
     ThumbDownOutlined,
 } from '@vicons/material';
 import { YesNoEnum } from '@/utils/IEnum';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const props = withDefaults(defineProps<{
     comment: Item.CommentProps,
     atUserid: number,
@@ -148,7 +144,7 @@ const submitReply = () => {
     })
         .then((res) => {
             switchReply(false);
-            window.$message.success('评论成功');
+            window.$message.success($t('commentSuccess'));
             emit('reload');
         })
         .catch((err) => {

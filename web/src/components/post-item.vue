@@ -24,27 +24,21 @@
                         type="warning"
                         size="small"
                         round
-                    >
-                        置顶
-                    </n-tag>
+                    >{{$t('pin')}}</n-tag>
                     <n-tag
                         v-if="post.visibility == 1"
                         class="top-tag"
                         type="error"
                         size="small"
                         round
-                    >
-                        私密
-                    </n-tag>
+                    >{{$t('private')}}</n-tag>
                     <n-tag
                         v-if="post.visibility == 2"
                         class="top-tag"
                         type="info"
                         size="small"
                         round
-                    >
-                        好友可见
-                    </n-tag>
+                    >{{$t('visibleToFriends')}}</n-tag>
             </template>
             <template #header-extra>
                 <div class="item-header-extra">
@@ -120,7 +114,9 @@ import {
     BookmarkOutline,
     ChatboxOutline,
 } from '@vicons/ionicons5';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const router = useRouter();
 const store = useStore();
 const props = withDefaults(defineProps<{

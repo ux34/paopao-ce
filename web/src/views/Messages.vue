@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-nav title="消息" />
+        <main-nav :title="$t('messages')" />
 
         <n-list class="main-content-wrap messages-wrap" bordered>
             <div v-if="loading" class="skeleton-wrap">
@@ -9,7 +9,7 @@
 
             <div v-else>
                 <div class="empty-wrap" v-if="list.length === 0">
-                    <n-empty size="large" description="暂无数据" />
+                    <n-empty size="large" :description="$t('noDataAvailable')" />
                 </div>
 
                 <n-list-item v-for="m in list" :key="m.id">
@@ -33,6 +33,9 @@ import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import { getMessages } from '@/api/user';
+import { useI18n } from 'vue-i18n';
+
+const $t = useI18n().t;
 const route = useRoute();
 const store = useStore();
 const loading = ref(false);

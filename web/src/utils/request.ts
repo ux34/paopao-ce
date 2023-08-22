@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders, Method } from 'axios';
+import { msgEn, msgZh } from './CustomStatus'
 
 const service = axios.create({
     baseURL: import.meta.env.VITE_HOST,
@@ -35,13 +36,24 @@ service.interceptors.response.use(
             localStorage.removeItem('PAOPAO_TOKEN');
 
             if (response?.data.code !== 10005) {
-                window.$message.warning(response?.data.msg || '鉴权失败');
+                window.$message.warning(response?.data.msg || '401');
             } else {
                 // 打开登录弹窗
                 window.$store.commit('triggerAuth', true);
             }
         } else {
-            window.$message.error(response?.data?.msg || '请求失败');
+            // i18n 消息使用状态码
+            // window.$message.error(response?.data?.msg || '请求失败');
+            const locale = localStorage.getItem('PAOPAO_LOCALE') || 'en';
+            let msg
+            if (locale === 'zh') {
+                msg = msgZh[response.data?.code] || '请求失败'
+            } else {
+                msg = msgEn[response.data?.code] || 'Request failed'
+
+            }
+
+            window.$message.error(msg);
         }
         return Promise.reject(response?.data || {});
     }

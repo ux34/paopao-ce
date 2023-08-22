@@ -1,11 +1,12 @@
 import { createRouter, createWebHashHistory } from "vue-router";
+import {i18n} from '../locales'
 
 const routes = [
   {
     path: "/",
     name: "home",
     meta: {
-      title: "广场",
+      title: "app.homeTitle",
       keepAlive: true,
     },
     component: () => import("@/views/Home.vue"),
@@ -14,7 +15,7 @@ const routes = [
     path: "/post",
     name: "post",
     meta: {
-      title: "泡泡详情",
+      title: "app.postDetailsTitle",
     },
     component: () => import("@/views/Post.vue"),
   },
@@ -22,23 +23,23 @@ const routes = [
     path: "/topic",
     name: "topic",
     meta: {
-      title: "话题",
+      title: "sidebar.topic",
     },
     component: () => import("@/views/Topic.vue"),
   },
-  {
-    path: "/anouncement",
-    name: "anouncement",
-    meta: {
-      title: "公告",
-    },
-    component: () => import("@/views/Anouncement.vue"),
-  },
+  // {
+  //   path: "/anouncement",
+  //   name: "anouncement",
+  //   meta: {
+  //     title: "announcement",
+  //   },
+  //   component: () => import("@/views/Anouncement.vue"),
+  // },
   {
     path: "/profile",
     name: "profile",
     meta: {
-      title: "主页",
+      title: "sidebar.profile",
     },
     component: () => import("@/views/Profile.vue"),
   },
@@ -46,7 +47,7 @@ const routes = [
     path: "/u",
     name: "user",
     meta: {
-      title: "用户详情",
+      title: "userDetails",
     },
     component: () => import("@/views/User.vue"),
   },
@@ -54,7 +55,7 @@ const routes = [
     path: "/messages",
     name: "messages",
     meta: {
-      title: "消息",
+      title: "sidebar.message",
     },
     component: () => import("@/views/Messages.vue"),
   },
@@ -62,7 +63,7 @@ const routes = [
     path: "/collection",
     name: "collection",
     meta: {
-      title: "收藏",
+      title: "sidebar.collection",
     },
     component: () => import("@/views/Collection.vue"),
   },
@@ -70,7 +71,7 @@ const routes = [
     path: "/contacts",
     name: "contacts",
     meta: {
-      title: "好友",
+      title: "sidebar.friend",
     },
     component: () => import("@/views/Contacts.vue"),
   },
@@ -78,23 +79,23 @@ const routes = [
     path: "/following",
     name: "following",
     meta: {
-      title: "关注",
+      title: "tabs.follow",
     },
     component: () => import("@/views/Following.vue"),
   },
-  {
-    path: "/wallet",
-    name: "wallet",
-    meta: {
-      title: "钱包",
-    },
-    component: () => import("@/views/Wallet.vue"),
-  },
+  // {
+  //   path: "/wallet",
+  //   name: "wallet",
+  //   meta: {
+  //     title: i18n.global.t("wallet"),
+  //   },
+  //   component: () => import("@/views/Wallet.vue"),
+  // },
   {
     path: "/setting",
     name: "setting",
     meta: {
-      title: "设置",
+      title: "sidebar.settings",
     },
     component: () => import("@/views/Setting.vue"),
   },
@@ -118,7 +119,7 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  document.title = `${to.meta.title} | 泡泡 - 一个清新文艺的微社区`;
+  document.title = `${i18n.global.t(to.meta.title as string)} | ${i18n.global.t('app.name')}`;
   next();
 });
 

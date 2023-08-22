@@ -9,7 +9,7 @@
                     {{ props.reply.user.username }}
                 </router-link>
                 <span class="reply-name">
-                    {{ props.reply.at_user_id > 0 ? '回复' : ':' }}
+                    {{ props.reply.at_user_id > 0 ? $t('reply') : ':' }}
                 </span>
 
                 <router-link class="user-link" :to="{
@@ -24,7 +24,7 @@
                 <n-popconfirm v-if="
                     store.state.userInfo.is_admin ||
                     store.state.userInfo.id === props.reply.user.id
-                " negative-text="取消" positive-text="确认" @positive-click="execDelAction">
+                " :negative-text="$t('cancel')" :positive-text="$t('confirm')" @positive-click="execDelAction">
                     <template #trigger>
                         <n-button quaternary circle size="tiny" class="del-btn">
                             <template #icon>
@@ -33,9 +33,7 @@
                                 </n-icon>
                             </template>
                         </n-button>
-                    </template>
-                    是否确认删除？
-                </n-popconfirm>
+                    </template>{{$t('confirmDelete')}}</n-popconfirm>
             </div>
         </div>
 
@@ -62,7 +60,7 @@
                             <thumb-up-outlined v-if="!hasThumbsUp" />
                             <thumb-up-twotone v-if="hasThumbsUp" class="show" />
                         </n-icon>
-                        <span class="upvote-count">{{ thumbsUpCount>0 ? thumbsUpCount : "赞" }}</span>
+                        <span class="upvote-count">{{ thumbsUpCount>0 ? thumbsUpCount : $t("like") }}</span>
                     </div>
                     <div v-if="!store.state.userLogined" class="action-item">
                         <n-icon size="medium">
@@ -75,7 +73,7 @@
                             <thumb-down-twotone v-if="hasThumbsDown" class="show" />
                         </n-icon>
                     </div>
-                    <span v-if="store.state.userLogined" class="show opacity-item reply-btn" @click="focusReply"> 回复 </span>
+                    <span v-if="store.state.userLogined" class="show opacity-item reply-btn" @click="focusReply">{{$t('reply')}}</span>
                 </div>
             </div>
         </div>
@@ -95,7 +93,9 @@ import {
     ThumbDownOutlined,
 } from '@vicons/material';
 import { YesNoEnum } from '@/utils/IEnum';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const props = withDefaults(defineProps<{
     tweetId: number,
     reply: Item.ReplyProps,
@@ -156,7 +156,7 @@ const execDelAction = () => {
         id: props.reply.id,
     })
         .then((res) => {
-            window.$message.success('删除成功');
+            window.$message.success($t('deleteSuccess'));
 
             setTimeout(() => {
                 emit('reload');

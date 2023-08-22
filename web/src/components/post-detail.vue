@@ -22,27 +22,21 @@
                     type="warning"
                     size="small"
                     round
-                >
-                    置顶
-                </n-tag>
+                >{{$t('pin')}}</n-tag>
                 <n-tag
                     v-if="post.visibility == VisibilityEnum.PRIVATE"
                     class="top-tag"
                     type="error"
                     size="small"
                     round
-                >
-                    私密
-                </n-tag>
+                >{{$t('private')}}</n-tag>
                 <n-tag
                     v-if="post.visibility == VisibilityEnum.FRIEND"
                     class="top-tag"
                     type="info"
                     size="small"
                     round
-                >
-                    好友可见
-                </n-tag>
+                >{{$t('visibleToFriends')}}</n-tag>
             </template>
             <template #header-extra>
                 <div
@@ -74,10 +68,10 @@
                     v-model:show="showDelModal"
                     :mask-closable="false"
                     preset="dialog"
-                    title="提示"
-                    content="确定删除该泡泡动态吗？"
-                    positive-text="确认"
-                    negative-text="取消"
+                    :title="$t('prompt')"
+                    :content="$t('confirmDeleteBubble')"
+                    :positive-text="$t('confirm')"
+                    :negative-text="$t('cancel')"
                     @positive-click="execDelAction"
                 />
                 <!-- 锁定确认 -->
@@ -85,14 +79,14 @@
                     v-model:show="showLockModal"
                     :mask-closable="false"
                     preset="dialog"
-                    title="提示"
+                    :title="$t('prompt')"
                     :content="
-                        '确定' +
-                        (post.is_lock ? '解锁' : '锁定') +
+                        'confirmAction' +
+                        (post.is_lock ? 'unlock' : 'lock') +
                         '该泡泡动态吗？'
                     "
-                    positive-text="确认"
-                    negative-text="取消"
+                    :positive-text="$t('confirm')"
+                    :negative-text="$t('cancel')"
                     @positive-click="execLockAction"
                 />
                 <!-- 置顶确认 -->
@@ -100,14 +94,14 @@
                     v-model:show="showStickModal"
                     :mask-closable="false"
                     preset="dialog"
-                    title="提示"
+                    :title="$t('prompt')"
                     :content="
-                        '确定' +
-                        (post.is_top ? '取消置顶' : '置顶') +
+                        'confirmAction' +
+                        (post.is_top ? 'unpin' : 'pin') +
                         '该泡泡动态吗？'
                     "
-                    positive-text="确认"
-                    negative-text="取消"
+                    :positive-text="$t('confirm')"
+                    :negative-text="$t('cancel')"
                     @positive-click="execStickAction"
                 />
                 <!-- 亮点确认 -->
@@ -115,14 +109,14 @@
                     v-model:show="showHighlightModal"
                     :mask-closable="false"
                     preset="dialog"
-                    title="提示"
+                    :title="$t('prompt')"
                     :content="
                         '确定将该泡泡动态' +
-                        (post.is_essence ? '取消亮点' : '设为亮点') +
+                        (post.is_essence ? 'cancelHighlight' : 'setAsHighlight') +
                         '吗？'
                     "
-                    positive-text="确认"
-                    negative-text="取消"
+                    :positive-text="$t('confirm')"
+                    :negative-text="$t('cancel')"
                     @positive-click="execHighlightAction"
                 />
                 <!-- 修改可见度确认 -->
@@ -130,14 +124,14 @@
                     v-model:show="showVisibilityModal"
                     :mask-closable="false"
                     preset="dialog"
-                    title="提示"
+                    :title="$t('prompt')"
                     :content="
                         '确定将该泡泡动态可见度修改为' +
-                        (tempVisibility == 0 ? '公开' : (tempVisibility == 1 ? '私密' : '好友可见')) +
+                        (tempVisibility == 0 ? 'public' : (tempVisibility == 1 ? 'private' : 'visibleToFriends')) +
                         '吗？'
                     "
-                    positive-text="确认"
-                    negative-text="取消"
+                    :positive-text="$t('confirm')"
+                    :negative-text="$t('cancel')"
                     @positive-click="execVisibilityAction"
                 />
             </template>
@@ -162,13 +156,13 @@
                 <post-video :videos="post.videos" :full="true" />
                 <post-link :links="post.links" />
                 <div class="timestamp">
-                    发布于 {{ formatPrettyTime(post.created_on) }}
+                    {{$t('postedOn')}} {{ formatPrettyTime(post.created_on) }}
                     <span v-if="post.ip_loc">
                         <n-divider vertical />
                         {{ post.ip_loc }}
                     </span>
                     <span v-if="!store.state.collapsedLeft && post.created_on != post.latest_replied_on &&  post.latest_replied_on">
-                        <n-divider vertical /> 最后回复
+                        <n-divider vertical /> {{$t('lastReplyOn')}}
                         {{ formatPrettyTime(post.latest_replied_on) }}
                     </span>
                 </div>
@@ -257,7 +251,9 @@ import {
 import type { DropdownOption } from 'naive-ui';
 import { VisibilityEnum } from '@/utils/IEnum';
 import copy from "copy-to-clipboard";
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const store = useStore();
 const router = useRouter();
 const hasStarred = ref(false);
@@ -334,20 +330,20 @@ const renderIcon = (icon: Component) => {
 const adminOptions = computed(() => {
     let options: DropdownOption[] = [
         {
-            label: '删除',
+            label: $t('delete'),
             key: 'delete',
             icon: renderIcon(TrashOutline)
         },
     ];
     if (post.value.is_lock === 0) {
         options.push({
-            label: '锁定',
+            label: $t('lock'),
             key: 'lock',
             icon: renderIcon(LockClosedOutline)
         });
     } else {
         options.push({
-            label: '解锁',
+            label: $t('unlock'),
             key: 'unlock',
             icon: renderIcon(LockOpenOutline)
         });
@@ -355,13 +351,13 @@ const adminOptions = computed(() => {
     if (store.state.userInfo.is_admin) {
         if (post.value.is_top === 0) {
             options.push({
-                label: '置顶',
+                label: $t('pin'),
                 key: 'stick',
                 icon: renderIcon(PushOutline)
             });
         } else {
             options.push({
-                label: '取消置顶',
+                label: $t('unpin'),
                 key: 'unstick',
                 icon: renderIcon(PushOutline)
             });
@@ -370,13 +366,13 @@ const adminOptions = computed(() => {
     if (store.state.userInfo.id === post.value.user.id) {
         if (post.value.is_essence === 0) {
             options.push({
-                label: '设为亮点',
+                label: $t('setAsHighlight'),
                 key: 'highlight',
                 icon: renderIcon(FlameOutline)
             });
         } else {
             options.push({
-                label: '取消亮点',
+                label: $t('cancelHighlight'),
                 key: 'unhighlight',
                 icon: renderIcon(FlameOutline)
             });
@@ -384,32 +380,32 @@ const adminOptions = computed(() => {
         
         if (post.value.visibility === VisibilityEnum.PUBLIC) {
             options.push({
-                label: '公开',
+                label: $t('public'),
                 key: 'vpublic',
                 icon: renderIcon(EyeOutline),
                 children: [
-                    { label: '私密', key: 'vprivate', icon: renderIcon(EyeOffOutline)}
-                    , { label: '好友可见', key: 'vfriend', icon: renderIcon(PersonOutline) }
+                    { label: $t('private'), key: 'vprivate', icon: renderIcon(EyeOffOutline)}
+                    , { label: $t('visibleToFriends'), key: 'vfriend', icon: renderIcon(PersonOutline) }
                 ]
             })
         } else if (post.value.visibility === VisibilityEnum.PRIVATE) {
             options.push({
-                label: '私密',
+                label: $t('private'),
                 key: 'vprivate',
                 icon: renderIcon(EyeOffOutline),
                 children: [
-                    { label: '公开', key: 'vpublic', icon: renderIcon(EyeOutline) }
-                    , { label: '好友可见', key: 'vfriend', icon: renderIcon(PersonOutline) }
+                    { label: $t('public'), key: 'vpublic', icon: renderIcon(EyeOutline) }
+                    , { label: $t('visibleToFriends'), key: 'vfriend', icon: renderIcon(PersonOutline) }
                 ]
             })
         } else {
             options.push({
-                label: '好友可见',
+                label: $t('visibleToFriends'),
                 key: 'vfriend',
                 icon: renderIcon(PersonOutline),
                 children: [
-                    { label: '公开', key: 'vpublic', icon: renderIcon(EyeOutline) }
-                    , { label: '私密', key: 'vprivate', icon: renderIcon(EyeOffOutline) }
+                    { label: $t('public'), key: 'vpublic', icon: renderIcon(EyeOutline) }
+                    , { label: $t('private'), key: 'vprivate', icon: renderIcon(EyeOffOutline) }
                 ]
             })
         }
@@ -493,7 +489,7 @@ const execDelAction = () => {
         id: post.value.id,
     })
         .then((_res) => {
-            window.$message.success('删除成功');
+            window.$message.success($t('deleteSuccess'));
             router.replace('/');
 
             setTimeout(() => {
@@ -511,9 +507,9 @@ const execLockAction = () => {
         .then((res) => {
             emit('reload');
             if (res.lock_status === 1) {
-                window.$message.success('锁定成功');
+                window.$message.success($t('lockedSuccess'));
             } else {
-                window.$message.success('解锁成功');
+                window.$message.success($t('unlockedSuccess'));
             }
         })
         .catch((_err) => {
@@ -527,9 +523,9 @@ const execStickAction = () => {
         .then((res) => {
             emit('reload');
             if (res.top_status === 1) {
-                window.$message.success('置顶成功');
+                window.$message.success($t('pinnedSuccess'));
             } else {
-                window.$message.success('取消置顶成功');
+                window.$message.success($t('unpinnedSuccess'));
             }
         })
         .catch((_err) => {
@@ -546,9 +542,9 @@ const execHighlightAction = () => {
                     is_essence: res.highlight_status,
             };
             if (res.highlight_status === 1) {
-                window.$message.success('设为亮点成功');
+                window.$message.success($t('highlightedSuccess'));
             } else {
-                window.$message.success('取消亮点成功');
+                window.$message.success($t('unhighlightedSuccess'));
             }
         })
         .catch((_err) => {
@@ -562,7 +558,7 @@ const execVisibilityAction = () => {
     })
         .then((res) => {
             emit('reload');
-            window.$message.success('修改可见性成功');
+            window.$message.success($t('visibilityChangedSuccess'));
         })
         .catch((_err) => {
             loading.value = false;
@@ -614,7 +610,7 @@ const handlePostCollection = () => {
 };
 const handlePostShare = () => {
    copy(`${window.location.origin}/#/post?id=${post.value.id}`);
-   window.$message.success('链接已复制到剪贴板');
+   window.$message.success($t('linkCopiedToClipboard'));
 };
 
 onMounted(() => {

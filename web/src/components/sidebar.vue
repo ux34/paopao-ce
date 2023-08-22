@@ -38,17 +38,11 @@
         </div>
         <div class="user-wrap" v-else>
             <div v-if="!allowUserRegister" class="login-only-wrap">
-                <n-button strong secondary round type="primary" @click="triggerAuth('signin')">
-                    登录
-                </n-button>
+                <n-button strong secondary round type="primary" @click="triggerAuth('signin')">{{$t('login')}}</n-button>
             </div>
             <div v-if="allowUserRegister" class="login-wrap">
-                <n-button strong secondary round type="primary" @click="triggerAuth('signin')">
-                    登录
-                </n-button>
-                <n-button strong secondary round type="info" @click="triggerAuth('signup')">
-                    注册
-                </n-button>
+                <n-button strong secondary round type="primary" @click="triggerAuth('signin')">{{$t('login')}}</n-button>
+                <n-button strong secondary round type="info" @click="triggerAuth('signup')">{{$t('register')}}</n-button>
             </div>
         </div>
     </div>
@@ -73,7 +67,9 @@ import {
 import { Hash } from '@vicons/tabler';
 import { getUnreadMsgCount } from '@/api/user';
 import LOGO from '@/assets/img/logo.png';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const store = useStore();
 const route = useRoute();
 const router = useRouter();
@@ -122,13 +118,13 @@ onMounted(() => {
 const menuOptions = computed(() => {
     const options = [
         {
-            label: '广场',
+            label: $t('sidebar.square'),
             key: 'home',
             icon: () => h(HomeOutline),
             href: '/',
         },
         {
-            label: '话题',
+            label: $t('sidebar.topic'),
             key: 'topic',
             icon: () => h(Hash),
             href: '/topic',
@@ -136,46 +132,46 @@ const menuOptions = computed(() => {
     ];
     if (import.meta.env.VITE_ENABLE_ANOUNCEMENT.toLowerCase() === 'true') {
         options.push( {
-            label: '公告',
+            label: $t('announcement'),
             key: 'anouncement',
             icon: () => h(MegaphoneOutline),
             href: '/anouncement',
         });
     }
     options.push({
-        label: '主页',
+        label: $t('sidebar.profile'),
         key: 'profile',
         icon: () => h(LeafOutline),
         href: '/profile',
     });
     options.push({
-        label: '消息',
+        label: $t('sidebar.message'),
         key: 'messages',
         icon: () => h(ChatbubblesOutline),
         href: '/messages',
     })
     options.push({
-        label: '收藏',
+        label: $t('sidebar.collection'),
         key: 'collection',
         icon: () => h(BookmarksOutline),
         href: '/collection',
     });
     options.push({
-        label: '好友',
+        label: $t('sidebar.friend'),
         key: 'contacts',
         icon: () => h(PeopleOutline),
         href: '/contacts',
     });
     if (import.meta.env.VITE_ENABLE_WALLET.toLocaleLowerCase() === 'true') {
         options.push({
-            label: '钱包',
+            label: $t('wallet'),
             key: 'wallet',
             icon: () => h(WalletOutline),
             href: '/wallet',
         });
     }
     options.push({
-        label: '设置',
+        label: $t('sidebar.settings'),
         key: 'setting',
         icon: () => h(SettingsOutline),
         href: '/setting',
@@ -185,13 +181,13 @@ const menuOptions = computed(() => {
         ? options
         : [
             {
-                label: '广场',
+                label: $t('sidebar.square'),
                 key: 'home',
                 icon: () => h(HomeOutline),
                 href: '/',
             },
             {
-                label: '话题',
+                label: $t('sidebar.topic'),
                 key: 'topic',
                 icon: () => h(Hash),
                 href: '/topic',

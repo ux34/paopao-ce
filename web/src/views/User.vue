@@ -1,6 +1,6 @@
 <template>
     <div>
-        <main-nav title="用户详情" />
+        <main-nav :title="$t('userDetails')" />
 
         <n-list class="main-content-wrap profile-wrap" bordered>
             <!-- 基础信息 -->
@@ -15,21 +15,15 @@
                             <span> @{{ user.username }} </span>
                             <n-tag
                                 v-if="store.state.userInfo.id > 0 && store.state.userInfo.username != user.username && user.is_friend"
-                                class="top-tag" type="info" size="small" round>
-                                好友
-                            </n-tag>
+                                class="top-tag" type="info" size="small" round>{{$t('friends')}}</n-tag>
                             <n-tag
                                 v-if="store.state.userInfo.id > 0 && store.state.userInfo.username != user.username && user.is_following"
-                                class="top-tag" type="success" size="small" round>
-                                已关注
-                            </n-tag>
-                            <n-tag v-if="user.is_admin" class="top-tag" type="error" size="small" round>
-                                管理员
-                            </n-tag>
+                                class="top-tag" type="success" size="small" round>{{$t('followed')}}</n-tag>
+                            <n-tag v-if="user.is_admin" class="top-tag" type="error" size="small" round>{{$t('administrator')}}</n-tag>
                         </div>
                         <div class="userinfo">
                             <span class="info-item">UID. {{ user.id }} </span>
-                            <span class="info-item">{{ formatDate(user.created_on) }}&nbsp;加入</span>
+                            <span class="info-item">{{$t('Joined in {date}', {date: formatDate(user.created_on)}) }}</span>
                         </div>
                         <div v-if="false" class="userinfo">
                             <span class="info-item">
@@ -88,18 +82,18 @@
                 <whisper-add-friend :show="showAddFriendWhisper" :user="user" @success="addFriendWhisperSuccess" />
             </n-spin>
             <n-tabs class="profile-tabs-wrap" type="line" animated @update:value="changeTab">
-                <n-tab-pane name="post" tab="泡泡"> </n-tab-pane>
-                <n-tab-pane name="comment" tab="评论"> </n-tab-pane>
-                <n-tab-pane name="highlight" tab="亮点"> </n-tab-pane>
-                <n-tab-pane name="media" tab="图文"> </n-tab-pane>
-                <n-tab-pane name="star" tab="喜欢"> </n-tab-pane>
+                <n-tab-pane name="post" :tab="$t('tabs.bubble')"> </n-tab-pane>
+                <n-tab-pane name="comment" :tab="$t('tabs.comments')"> </n-tab-pane>
+                <n-tab-pane name="highlight" :tab="$t('tabs.highlights')"> </n-tab-pane>
+                <n-tab-pane name="media" :tab="$t('tabs.media')"> </n-tab-pane>
+                <n-tab-pane name="star" :tab="$t('tabs.likes')"> </n-tab-pane>
             </n-tabs>
             <div v-if="loading" class="skeleton-wrap">
                 <post-skeleton :num="pageSize" />
             </div>
             <div v-else>
                 <div class="empty-wrap" v-if="list.length === 0">
-                    <n-empty size="large" description="暂无数据" />
+                    <n-empty size="large" :description="$t('noDataAvailable')" />
                 </div>
 
                 <div v-if="store.state.desktopModelShow">
@@ -143,7 +137,9 @@ import {
     BodyOutline,
     WalkOutline
 } from '@vicons/ionicons5';
+import { useI18n } from 'vue-i18n';
 
+const $t = useI18n().t;
 const dialog = useDialog();
 const store = useStore();
 const route = useRoute();
@@ -387,47 +383,47 @@ const renderIcon = (icon: Component) => {
 };
 const userOptions = computed(() => {
     let options: DropdownOption[] = [{
-        label: '私信',
+        label: $t('privateMessage'),
         key: 'whisper',
         icon: renderIcon(PaperPlaneOutline)
     }];
-    if (store.state.userInfo.is_admin) {
+    /* if (store.state.userInfo.is_admin) {
         if (user.status === 1) {
             options.push({
-                label: '禁言',
+                label: $t('mute'),
                 key: 'banned',
                 icon: renderIcon(CubeOutline)
             });
         } else {
             options.push({
-                label: '解封',
+                label: $t('unmute'),
                 key: 'deblocking',
                 icon: renderIcon(CubeOutline)
             });
         }
-    }
+    } */
     /* if (user.is_following) {
         options.push({
-            label: '取消关注',
+            label: $t('unfollow'),
             key: 'unfollow',
             icon: renderIcon(WalkOutline)
         })
     } else {
         options.push({
-            label: '关注',
+            label: $t('follow'),
             key: 'follow',
             icon: renderIcon(BodyOutline)
         })
     } */
     if (user.is_friend) {
         options.push({
-            label: '删除好友',
+            label: $t('removeFriend'),
             key: 'delete',
             icon: renderIcon(PersonRemoveOutline)
         });
     } else {
         options.push({
-            label: '添加朋友',
+            label: $t('addFriend'),
             key: 'requesting',
             icon: renderIcon(PersonAddOutline)
         });
@@ -461,10 +457,10 @@ const handleUserAction = (
 };
 const openDeleteFriend = () => {
     dialog.warning({
-        title: '删除好友',
-        content: '将好友 “' + user.nickname + '” 删除，将同时删除 点赞/收藏 列表中关于该朋友的 “好友可见” 推文',
-        positiveText: '确定',
-        negativeText: '取消',
+        title: $t('removeFriend'),
+        content: $t('deletingFriendTips', {name: user.nickname}),
+        positiveText: $t('confirmAction'),
+        negativeText: $t('cancel'),
         onPositiveClick: () => {
             userLoading.value = true;
             deleteFriend({
@@ -484,11 +480,11 @@ const openDeleteFriend = () => {
 };
 const handleFollowUser = () => {
     dialog.success({
-        title: '提示',
+        title: $t('prompt'),
         content:
-            '确定' + (user.is_following ? '取消关注' : '关注') + '该用户吗？',
-        positiveText: '确定',
-        negativeText: '取消',
+        '确定' + (user.is_following ? '取消关注' : '关注') + '该用户吗？',
+        positiveText: $t('confirmAction'),
+        negativeText: $t('cancel'),
         onPositiveClick: () => {
             userLoading.value = true;
             if (user.is_following) {
@@ -496,7 +492,7 @@ const handleFollowUser = () => {
                     user_id: user.id,
                 }).then((_res) => {
                     userLoading.value = false;
-                    window.$message.success('取消关注成功');
+                    window.$message.success($t('unfollowSuccess'));
                     loadUser();
                 })
                 .catch((err) => {
@@ -508,7 +504,7 @@ const handleFollowUser = () => {
                     user_id: user.id,
                 }).then((_res) => {
                     userLoading.value = false;
-                    window.$message.success('关注成功');
+                    window.$message.success($t('followSuccess'));
                     loadUser();
                 })
                 .catch((err) => {
@@ -521,13 +517,13 @@ const handleFollowUser = () => {
 };
 const banUser = () => {
     dialog.warning({
-        title: '警告',
+        title: $t('warning'),
         content:
             '确定对该用户进行' +
             (user.status === 1 ? '禁言' : '解封') +
             '处理吗？',
-        positiveText: '确定',
-        negativeText: '取消',
+        positiveText: $t('confirmAction'),
+        negativeText: $t('cancel'),
         onPositiveClick: () => {
             userLoading.value = true;
             changeUserStatus({
@@ -537,9 +533,9 @@ const banUser = () => {
                 .then((_res) => {
                     userLoading.value = false;
                     if (user.status === 1) {
-                        window.$message.success('禁言成功');
+                        window.$message.success($t('muteSuccess'));
                     } else {
-                        window.$message.success('解封成功');
+                        window.$message.success($t('unmuteSuccess'));
                     }
                     loadUser();
                 })
